@@ -10,7 +10,7 @@ from .sim_params import SIMULATION_TIME_STEPS
 
 sim_config = config_sim (
     {
-        'N': 1,
+        'N': MONTE_CARLO_RUNS,
         'T': range(SIMULATION_TIME_STEPS), # number of timesteps
         'M': sys_params,
     }
