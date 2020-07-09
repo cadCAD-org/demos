@@ -6,7 +6,7 @@ from covid_19_sir import config
 from covid_19_seir import config
 from covid_19_seird import config
 
-#from {new_simulation} import config
+#from {new_simulation} import config4
 
 from cadCAD import configs
 import pandas as pd
@@ -18,8 +18,8 @@ def run(drop_midsteps: bool=True) -> pd.DataFrame:
     Each line represents an iteration of the parameter-sweep combinations.
     """
     exec_mode = ExecutionMode()
-    multi_proc_ctx = ExecutionContext(context=exec_mode.multi_proc)
-    run = Executor(exec_context=multi_proc_ctx, configs=configs)
+    multi_mode_ctx = ExecutionContext(context=exec_mode.multi_mode)
+    run = Executor(exec_context=multi_mode_ctx, configs=configs)
     raw_result, tensor_field, sessions = run.execute()
     results = pd.DataFrame(raw_result)
     return results
