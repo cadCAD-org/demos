@@ -6,7 +6,7 @@ from covid_19_sir import config
 from covid_19_seir import config
 from covid_19_seird import config
 
-#from {new_simulation} import config4
+#from {new_simulation} import config
 
 from cadCAD import configs
 import pandas as pd
