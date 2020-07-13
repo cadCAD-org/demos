@@ -1,7 +1,8 @@
 from ._utils import init_param_dist
 import numpy as np
-import numpy.random as npr 
 from scipy.stats import expon
+from covid_19_stochastic.sim_params import MONTE_CARLO_RUNS
+rngs = [np.random.RandomState(i) for i in range (MONTE_CARLO_RUNS)]
 
 ## Policies
 
@@ -9,9 +10,10 @@ def p_exposed_growth(params, substep, state_history, prev_state):
     N = prev_state['susceptible'] + prev_state['exposed'] + prev_state['infected'] + prev_state['recovered'] 
     S = prev_state['susceptible']
     I = prev_state['infected']
+    npr = rngs[prev_state['run']-1]
 
-    r0 = init_param_dist(params['r0_dist'], params['rand_seed']).rvs(1)
-    gamma = 1/(init_param_dist(params['gamma_dist'], params['rand_seed']).rvs(1))
+    r0 = init_param_dist(params['r0_dist'], npr).rvs(1)
+    gamma = 1/(init_param_dist(params['gamma_dist'], npr).rvs(1))
     beta = r0*gamma
 
     SE = npr.binomial(S,
@@ -22,8 +24,9 @@ def p_exposed_growth(params, substep, state_history, prev_state):
 
 def p_infected_growth(params, substep, state_history, prev_state):
     E = prev_state['exposed']
+    npr = rngs[prev_state['run']-1]
 
-    alpha = 1/(init_param_dist(params['alpha_dist'], params['rand_seed']).rvs(1))
+    alpha = 1/(init_param_dist(params['alpha_dist'], npr).rvs(1))
 
     EI = npr.binomial(E,
                       expon(scale=1/alpha).cdf(1))[0]
@@ -33,8 +36,9 @@ def p_infected_growth(params, substep, state_history, prev_state):
 
 def p_recovered_growth(params, substep, state_history, prev_state):
     I = prev_state['infected']
+    npr = rngs[prev_state['run']-1]
 
-    gamma = 1/(init_param_dist(params['gamma_dist'], params['rand_seed']).rvs(1))
+    gamma = 1/(init_param_dist(params['gamma_dist'], npr).rvs(1))
     
     IR = npr.binomial(I,
                       expon(scale=1/gamma).cdf(1))[0]
