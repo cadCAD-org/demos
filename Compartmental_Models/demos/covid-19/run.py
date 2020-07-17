@@ -2,11 +2,12 @@
 from cadCAD.engine import ExecutionMode, ExecutionContext, Executor
 
 # Simulation configs, input any new simulations here
-from covid_19_sir import config
+from covid_19_sir_r0 import config
 from covid_19_seir import config
-from covid_19_seird import config
-from covid_19_get_r0 import config
-#from {new_simulation} import config
+from covid_19_seird_r0 import config
+from covid_19_get_r0_1 import config
+from covid_19_get_r0_external import config
+from covid_19_seird_predict import config
 
 from cadCAD import configs
 import pandas as pd

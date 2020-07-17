@@ -1,5 +1,5 @@
 genesis_states = {
-    'susceptible': 990,
-    'infected': 10,
+    'susceptible': 900,
+    'infected': 100,
     'recovered': 0,
 }
