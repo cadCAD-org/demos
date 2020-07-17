@@ -5,7 +5,6 @@ from cadCAD.engine import ExecutionMode, ExecutionContext, Executor
 from covid_19_sir import config
 from covid_19_seir import config
 from covid_19_seird import config
-from covid_19_seir_3778 import config
 from covid_19_stochastic import config
 
 #from {new_simulation} import config
@@ -21,22 +20,8 @@ def run(drop_midsteps: bool=True) -> pd.DataFrame:
     """
     
     exec_mode = ExecutionMode()
-    multi_proc_ctx = ExecutionContext(context=exec_mode.multi_proc)
-    run = Executor(exec_context=multi_proc_ctx, configs=configs)
-    results = pd.DataFrame()
-    i = 0
-    for raw_result, _ in run.execute():
-        params = configs[i].sim_config['M']
-        result_record = pd.DataFrame.from_records([tuple([i for i in params.values()])], columns=list(params.keys()))
-
-        df = pd.DataFrame(raw_result)
-        # keep only last substep of each timestep
-        if drop_midsteps:
-            max_substep = max(df.substep)
-            is_droppable = (df.substep!=max_substep)&(df.substep!=0)
-            df.drop(df[is_droppable].index, inplace=True)
-
-        result_record['dataset'] = [df]
-        results = results.append(result_record)
-        i += 1
-    return results.reset_index()
+    multi_mode_ctx = ExecutionContext(context=exec_mode.multi_mode)
+    run = Executor(exec_context=multi_mode_ctx, configs=configs)
+    raw_result, _, _ = run.execute()
+    results = pd.DataFrame(raw_result)
+    return results
