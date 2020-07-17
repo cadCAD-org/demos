@@ -5,8 +5,8 @@ from cadCAD.engine import ExecutionMode, ExecutionContext, Executor
 from covid_19_sir import config
 from covid_19_seir import config
 from covid_19_seird import config
+from covid_19_seir_3778 import config
 
-#from {new_simulation} import config
 
 from cadCAD import configs
 import pandas as pd
