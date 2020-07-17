@@ -85,3 +85,4 @@ def s_total_infected(params, substep, state_history, prev_state, policy_input):
 
 def s_reproductive_number(params, substep, state_history, prev_state, policy_input):
     return ('reproductive_number', policy_input['reproductive_number_mutation'])
+    

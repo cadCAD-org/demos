@@ -239,3 +239,4 @@ class ReproductionNumber:
         else:
             fig.savefig(filename, dpi=fig.dpi)
             plt.close()
+            
