@@ -18,5 +18,3 @@ folder: tutorials<br>
 --readme.md: explanation of goals and formatting for tutorials <br>
 --folders for specific tutorials (eg, robot and marbles) <br>
 ----demo model code and markdown etc
-
-###Jeff's change!
