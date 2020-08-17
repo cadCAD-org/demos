@@ -1,8 +1,8 @@
 # Policies
 
-def p_actionDecoder(params, substep, state_history, prev_state):
+def p_actionDecoder(_params, substep, sH, s):
     
-    prev_timestep = prev_state['timestep']
+    prev_timestep = s['timestep']
     if substep > 1:
         prev_timestep -= 1
         
@@ -35,112 +35,112 @@ def p_actionDecoder(params, substep, state_history, prev_state):
 
 # SUFs
 
-def s_addLiquidity_UNI(params, substep, state_history, prev_state, policy_input):
-    total_liquidity = int(prev_state['UNI_supply'])
-    eth_reserve = int(prev_state['ETH_balance'])
-    liquidity_minted = int(policy_input['eth_deposit'] * total_liquidity // eth_reserve)
+def s_addLiquidity_UNI(_params, substep, sH, s, _input):
+    total_liquidity = int(s['UNI_supply'])
+    eth_reserve = int(s['ETH_balance'])
+    liquidity_minted = int(_input['eth_deposit'] * total_liquidity // eth_reserve)
     return ('UNI_supply', total_liquidity + liquidity_minted)
 
-def s_addLiquidity_ETH(params, substep, state_history, prev_state, policy_input):
-    eth_reserve = int(prev_state['ETH_balance'])
-    return ('ETH_balance', eth_reserve + policy_input['eth_deposit'])
+def s_addLiquidity_ETH(_params, substep, sH, s, _input):
+    eth_reserve = int(s['ETH_balance'])
+    return ('ETH_balance', eth_reserve + _input['eth_deposit'])
 
-def s_addLiquidity_DAI(params, substep, state_history, prev_state, policy_input):
-    eth_reserve = int(prev_state['ETH_balance'])
-    token_reserve = int(prev_state['DAI_balance'])
-    if policy_input['eth_deposit'] == 0:
+def s_addLiquidity_DAI(_params, substep, sH, s, _input):
+    eth_reserve = int(s['ETH_balance'])
+    token_reserve = int(s['DAI_balance'])
+    if _input['eth_deposit'] == 0:
         token_amount = 0
     else:
-        token_amount = int(policy_input['eth_deposit'] * token_reserve // eth_reserve + 1)
+        token_amount = int(_input['eth_deposit'] * token_reserve // eth_reserve + 1)
     return ('DAI_balance', token_reserve + token_amount)
 
-def s_removeLiquidity_UNI(params, substep, state_history, prev_state, policy_input):
-    total_liquidity = int(prev_state['UNI_supply'])
-    amount = int(policy_input['UNI_burn'])
+def s_removeLiquidity_UNI(_params, substep, sH, s, _input):
+    total_liquidity = int(s['UNI_supply'])
+    amount = int(_input['UNI_burn'])
     return ('UNI_supply', int(total_liquidity - amount))
 
-def s_removeLiquidity_ETH(params, substep, state_history, prev_state, policy_input):
-    total_liquidity = int(prev_state['UNI_supply'])
-    eth_reserve = int(prev_state['ETH_balance'])
-    amount = int(policy_input['UNI_burn'])
+def s_removeLiquidity_ETH(_params, substep, sH, s, _input):
+    total_liquidity = int(s['UNI_supply'])
+    eth_reserve = int(s['ETH_balance'])
+    amount = int(_input['UNI_burn'])
     eth_amount = int(amount * eth_reserve // total_liquidity)
     return ('ETH_balance', int(eth_reserve - eth_amount))
 
-def s_removeLiquidity_DAI(params, substep, state_history, prev_state, policy_input):
-    total_liquidity = int(prev_state['UNI_supply'])
-    token_reserve = int(prev_state['DAI_balance'])
-    amount = int(policy_input['UNI_burn'])
+def s_removeLiquidity_DAI(_params, substep, sH, s, _input):
+    total_liquidity = int(s['UNI_supply'])
+    token_reserve = int(s['DAI_balance'])
+    amount = int(_input['UNI_burn'])
     token_amount = int(amount * token_reserve // total_liquidity)
     return ('DAI_balance', int(token_reserve - token_amount))
 
-def s_ethToToken_ETH(params, substep, history, prev_state, policy_input):
-    eth_sold = int(policy_input['eth_sold']) #amount of ETH being sold by the user
-    eth_reserve = int(prev_state['ETH_balance'])
+def s_ethToToken_ETH(_params, substep, history, s, _input):
+    eth_sold = int(_input['eth_sold']) #amount of ETH being sold by the user
+    eth_reserve = int(s['ETH_balance'])
     return ('ETH_balance', eth_reserve + eth_sold)
 
-def s_ethToToken_DAI(params, substep, state_history, prev_state, policy_input):
-    eth_sold = int(policy_input['eth_sold']) #amount of ETH being sold by the user
-    eth_reserve = int(prev_state['ETH_balance'])
-    token_reserve = int(prev_state['DAI_balance'])
+def s_ethToToken_DAI(_params, substep, sH, s, _input):
+    eth_sold = int(_input['eth_sold']) #amount of ETH being sold by the user
+    eth_reserve = int(s['ETH_balance'])
+    token_reserve = int(s['DAI_balance'])
     if eth_sold == 0:
         return ('DAI_balance', token_reserve)
     else:
-        tokens_bought = int(getInputPrice(eth_sold, eth_reserve, token_reserve, params))
+        tokens_bought = int(getInputPrice(eth_sold, eth_reserve, token_reserve, _params))
         return ('DAI_balance', token_reserve - tokens_bought)
 
-def s_tokenToEth_ETH(params, substep, state_history, prev_state, policy_input):
-    tokens_sold = int(policy_input['tokens_sold']) #amount of tokens being sold by the user
-    eth_reserve = int(prev_state['ETH_balance'])
+def s_tokenToEth_ETH(_params, substep, sH, s, _input):
+    tokens_sold = int(_input['tokens_sold']) #amount of tokens being sold by the user
+    eth_reserve = int(s['ETH_balance'])
     if tokens_sold == 0:
         return ('ETH_balance', eth_reserve)
     else:
-        token_reserve = int(prev_state['DAI_balance'])
-        eth_bought = int(getInputPrice(tokens_sold, token_reserve, eth_reserve, params))
+        token_reserve = int(s['DAI_balance'])
+        eth_bought = int(getInputPrice(tokens_sold, token_reserve, eth_reserve, _params))
         return ('ETH_balance', eth_reserve - eth_bought)
     
-def s_tokenToEth_DAI(params, substep, state_history, prev_state, policy_input):
-    tokens_sold = int(policy_input['tokens_sold']) #amount of tokens being sold by the user
-    token_reserve = int(prev_state['DAI_balance'])
+def s_tokenToEth_DAI(_params, substep, sH, s, _input):
+    tokens_sold = int(_input['tokens_sold']) #amount of tokens being sold by the user
+    token_reserve = int(s['DAI_balance'])
     return ('DAI_balance', token_reserve + tokens_sold)
 
-def s_mechanismHub_DAI(params, substep, state_history, prev_state, policy_input):
+def s_mechanismHub_DAI(_params, substep, sH, s, _input):
     action = input_['action_id']
     if action == 'TokenPurchase':
-        return s_ethToToken_DAI(params, substep, state_history, prev_state, input_)
+        return s_ethToToken_DAI(_params, substep, sH, s, input_)
     elif action == 'EthPurchase':
-        return tokenToEth_DAI(params, substep, state_history, prev_state, input_)
+        return tokenToEth_DAI(_params, substep, sH, s, input_)
     elif action == 'AddLiquidity':
-        return s_addLiquidity_DAI(params, substep, state_history, prev_state, input_)
+        return s_addLiquidity_DAI(_params, substep, sH, s, input_)
     elif action == 'Transfer':
-        return s_removeLiquidity_DAI(params, substep, state_history, prev_state, input_)
-    return('DAI_balance', prev_state['DAI_balance'])
+        return s_removeLiquidity_DAI(_params, substep, sH, s, input_)
+    return('DAI_balance', s['DAI_balance'])
     
-def s_mechanismHub_ETH(params, substep, state_history, prev_state, input_):
+def s_mechanismHub_ETH(_params, substep, sH, s, input_):
     action = input_['action_id']
     if action == 'TokenPurchase':
-        return s_ethToToken_ETH(params, substep, state_history, prev_state, input_)
+        return s_ethToToken_ETH(_params, substep, sH, s, input_)
     elif action == 'EthPurchase':
-        return tokenToEth_ETH(params, substep, state_history, prev_state, input_)
+        return tokenToEth_ETH(_params, substep, sH, s, input_)
     elif action == 'AddLiquidity':
-        return s_addLiquidity_ETH(params, substep, state_history, prev_state, input_)
+        return s_addLiquidity_ETH(_params, substep, sH, s, input_)
     elif action == 'Transfer':
-        return s_removeLiquidity_ETH(params, substep, state_history, prev_state, input_)
-    return('ETH_balance', prev_state['ETH_balance'])
+        return s_removeLiquidity_ETH(_params, substep, sH, s, input_)
+    return('ETH_balance', s['ETH_balance'])
 
-def s_mechanismHub_UNI(params, substep, state_history, prev_state, input_):
+def s_mechanismHub_UNI(_params, substep, sH, s, input_):
     action = input_['action_id']
     if action == 'AddLiquidity':
-        return s_addLiquidity_UNI(params, substep, state_history, prev_state, input_)
+        return s_addLiquidity_UNI(_params, substep, sH, s, input_)
     elif action == 'Transfer':
-        return s_removeLiquidity_UNI(params, substep, state_history, prev_state, input_)
-    return('UNI_supply', prev_state['UNI_supply'])
+        return s_removeLiquidity_UNI(_params, substep, sH, s, input_)
+    return('UNI_supply', s['UNI_supply'])
 
 
 # AUX
 
-def getInputPrice(input_amount, input_reserve, output_reserve, params):
-    fee_numerator = params['fee_numerator']
-    fee_denominator = params['fee_denominator']
+def getInputPrice(input_amount, input_reserve, output_reserve, _params):
+    fee_numerator = _params['fee_numerator']
+    fee_denominator = _params['fee_denominator']
     input_amount_with_fee = input_amount * fee_numerator
     numerator = input_amount_with_fee * output_reserve
     denominator = (input_reserve * fee_denominator) + input_amount_with_fee
