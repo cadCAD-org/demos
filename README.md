@@ -1,6 +1,7 @@
 # demos
 This repo contains tutorials and demos for learning how to use cadCAD. [task: replace this readme with a real one]
 
+See [Option A](https://github.com/cadCAD-org/cadCAD#1-installation) for easy installation.
 
 ## planned file structure
 
