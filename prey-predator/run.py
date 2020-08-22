@@ -17,22 +17,24 @@ def run(drop_midsteps: bool=True) -> pd.DataFrame:
     """
     
     exec_mode = ExecutionMode()
-    multi_proc_ctx = ExecutionContext(context=exec_mode.multi_proc)
-    run = Executor(exec_context=multi_proc_ctx, configs=configs)
+    exec_context = ExecutionContext(exec_mode.local_mode)
+    run = Executor(exec_context=exec_context, configs=configs)
     results = pd.DataFrame()
-    i = 0
-    for raw_result, _ in run.execute():
+
+    (system_events, tensor_field, sessions) = run.execute()
+
+    df = pd.DataFrame(system_events)
+    results = []
+    for i, (_, subset_df) in enumerate(df.groupby(["simulation", "subset"])):
         params = configs[i].sim_config['M']
         result_record = pd.DataFrame.from_records([tuple([i for i in params.values()])], columns=list(params.keys()))
-
-        df = pd.DataFrame(raw_result)
         # keep only last substep of each timestep
         if drop_midsteps:
-            max_substep = max(df.substep)
-            is_droppable = (df.substep!=max_substep)&(df.substep!=0)
-            df.drop(df[is_droppable].index, inplace=True)
+            max_substep = max(subset_df.substep)
+            is_droppable = (subset_df.substep != max_substep)
+            is_droppable &= (subset_df.substep != 0)
+            subset_df = subset_df.loc[~is_droppable]
+        result_record['dataset'] = [subset_df]
+        results.append(result_record)
 
-        result_record['dataset'] = [df]
-        results = results.append(result_record)
-        i += 1
-    return results.reset_index()
+    return pd.concat(results).reset_index()
