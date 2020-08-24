@@ -1,7 +1,10 @@
+import pandas as pd
+
 # Policies
 
 def p_actionDecoder(_params, substep, sH, s):
     
+    uniswap_events = s['UNI_df']
     prev_timestep = s['timestep']
     if substep > 1:
         prev_timestep -= 1
@@ -104,35 +107,35 @@ def s_tokenToEth_DAI(_params, substep, sH, s, _input):
     return ('DAI_balance', token_reserve + tokens_sold)
 
 def s_mechanismHub_DAI(_params, substep, sH, s, _input):
-    action = input_['action_id']
+    action = _input['action_id']
     if action == 'TokenPurchase':
-        return s_ethToToken_DAI(_params, substep, sH, s, input_)
+        return s_ethToToken_DAI(_params, substep, sH, s, _input)
     elif action == 'EthPurchase':
-        return tokenToEth_DAI(_params, substep, sH, s, input_)
+        return s_tokenToEth_DAI(_params, substep, sH, s, _input)
     elif action == 'AddLiquidity':
-        return s_addLiquidity_DAI(_params, substep, sH, s, input_)
+        return s_addLiquidity_DAI(_params, substep, sH, s, _input)
     elif action == 'Transfer':
-        return s_removeLiquidity_DAI(_params, substep, sH, s, input_)
+        return s_removeLiquidity_DAI(_params, substep, sH, s, _input)
     return('DAI_balance', s['DAI_balance'])
     
-def s_mechanismHub_ETH(_params, substep, sH, s, input_):
-    action = input_['action_id']
+def s_mechanismHub_ETH(_params, substep, sH, s, _input):
+    action = _input['action_id']
     if action == 'TokenPurchase':
-        return s_ethToToken_ETH(_params, substep, sH, s, input_)
+        return s_ethToToken_ETH(_params, substep, sH, s, _input)
     elif action == 'EthPurchase':
-        return tokenToEth_ETH(_params, substep, sH, s, input_)
+        return s_tokenToEth_ETH(_params, substep, sH, s, _input)
     elif action == 'AddLiquidity':
-        return s_addLiquidity_ETH(_params, substep, sH, s, input_)
+        return s_addLiquidity_ETH(_params, substep, sH, s, _input)
     elif action == 'Transfer':
-        return s_removeLiquidity_ETH(_params, substep, sH, s, input_)
+        return s_removeLiquidity_ETH(_params, substep, sH, s, _input)
     return('ETH_balance', s['ETH_balance'])
 
-def s_mechanismHub_UNI(_params, substep, sH, s, input_):
-    action = input_['action_id']
+def s_mechanismHub_UNI(_params, substep, sH, s, _input):
+    action = _input['action_id']
     if action == 'AddLiquidity':
-        return s_addLiquidity_UNI(_params, substep, sH, s, input_)
+        return s_addLiquidity_UNI(_params, substep, sH, s, _input)
     elif action == 'Transfer':
-        return s_removeLiquidity_UNI(_params, substep, sH, s, input_)
+        return s_removeLiquidity_UNI(_params, substep, sH, s, _input)
     return('UNI_supply', s['UNI_supply'])
 
 
