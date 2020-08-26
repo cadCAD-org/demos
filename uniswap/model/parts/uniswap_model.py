@@ -18,14 +18,39 @@ def p_actionDecoder(_params, substep, sH, s):
         'UNI_burn': 0,        
     }
     
+    # Token prices
+    pToken = s['DAI_balance'][data_counter] / s['ETH_balance'][data_counter]
+    yToken = uniswap_events['token_balance'][data_counter+1] / uniswap_events['eth_balance'][data_counter+1]
+    pETH = s['ETH_balance'][data_counter] / s['DAI_balance'][data_counter]
+    yETH = uniswap_events['eth_balance'][data_counter+1] / uniswap_events['token_balance'][data_counter+1]
+
+    eth_delta = uniswap_events['eth_delta'][data_counter]
+    token_delta = uniswap_events['eth_delta'][data_counter]
     event = uniswap_events['event'][data_counter]
-    
     action['action_id'] = event
     
     if event == 'TokenPurchase':
-        action['eth_sold'] = uniswap_events['eth_delta'][data_counter]
+        if classifier(eth_delta, _params['c_rule']) == 'Conv':
+            if eth_delta * pToken >= token_delta * (1 - _params['conv_tolerance']):
+                action['eth_sold'] = uniswap_events['eth_delta'][data_counter]
+            else:
+                pass
+        else:
+            if yToken > pToken:
+                action['eth_sold'] = uniswap_events['eth_delta'][data_counter]
+            else:
+                pass
     elif event == 'EthPurchase':
-        action['tokens_sold'] = uniswap_events['token_delta'][data_counter]
+        if classifier(token_delta, _params['c_rule']) == 'Conv':
+            if token_delta * pETH >= eth_delta * (1 + _params['conv_tolerance']):
+                action['tokens_sold'] = uniswap_events['token_delta'][data_counter]
+            else:
+                pass
+        else:
+            if yETH > pETH:
+                action['tokens_sold'] = uniswap_events['token_delta'][data_counter]
+            else:
+                pass
     elif event == 'AddLiquidity':
         action['eth_deposit'] = uniswap_events['eth_delta'][data_counter]
     elif event == 'Transfer':
@@ -148,3 +173,9 @@ def getInputPrice(input_amount, input_reserve, output_reserve, _params):
     numerator = input_amount_with_fee * output_reserve
     denominator = (input_reserve * fee_denominator) + input_amount_with_fee
     return int(numerator // denominator)
+
+def classifier(coin_delta, c_rule):
+    if(coin_delta / (10 ** (18-c_rule))).is_integer():
+      return "Conv"
+    else:
+      return "Arb"
