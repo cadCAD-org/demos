@@ -14,8 +14,8 @@ def run(drop_midsteps: bool=True) -> pd.DataFrame:
     Each line represents an iteration of the parameter-sweep combinations.
     """
     exec_mode = ExecutionMode()
-    local_mode_ctx = ExecutionContext(context=exec_mode.multi_mode)
-    simulation = Executor(exec_context=local_mode_ctx, configs=configs)
+    local_proc_ctx = ExecutionContext(context=exec_mode.multi_mode)
+    simulation = Executor(exec_context=local_proc_ctx, configs=configs)
     raw_system_events, tensor_field, sessions = simulation.execute()
     simulation_result = pd.DataFrame(raw_system_events)
     return simulation_result

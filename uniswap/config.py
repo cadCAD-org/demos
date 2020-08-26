@@ -8,7 +8,7 @@ from .sim_params import *
 sim_config = config_sim(
     {
         'N': MONTE_CARLO_RUNS,
-        'T': range(5), 
+        'T': range(SIMULATION_TIME_STEPS), 
         'M': sys_params,
     }
 )

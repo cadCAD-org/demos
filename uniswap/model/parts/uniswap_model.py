@@ -1,10 +1,9 @@
-import pandas as pd
-
 # Policies
 
 def p_actionDecoder(_params, substep, sH, s):
+    #print(_params)
+    uniswap_events = _params[0]['uniswap_events']
     
-    uniswap_events = s['UNI_df']
     prev_timestep = s['timestep']
     if substep > 1:
         prev_timestep -= 1
@@ -34,6 +33,7 @@ def p_actionDecoder(_params, substep, sH, s):
         if UNI_delta < 0:
             action['UNI_burn'] = -UNI_delta
 
+    del uniswap_events
     return action
 
 # SUFs
@@ -142,8 +142,8 @@ def s_mechanismHub_UNI(_params, substep, sH, s, _input):
 # AUX
 
 def getInputPrice(input_amount, input_reserve, output_reserve, _params):
-    fee_numerator = _params['fee_numerator']
-    fee_denominator = _params['fee_denominator']
+    fee_numerator = _params[0]['fee_numerator']
+    fee_denominator = _params[0]['fee_denominator']
     input_amount_with_fee = input_amount * fee_numerator
     numerator = input_amount_with_fee * output_reserve
     denominator = (input_reserve * fee_denominator) + input_amount_with_fee
