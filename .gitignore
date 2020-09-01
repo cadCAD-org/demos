@@ -8,7 +8,6 @@
 .eggs
 *.egg-info
 *.csv
-simulations/.ipynb_checkpoints
 monkeytype.sqlite3
 
 __pycache__
@@ -17,8 +16,4 @@ Pipfile.lock
 notebooks
 build
 
-notes.txt
-
-simulations/validation/
-testing/models/external_dataset.py
-testing/models/historical_state_access.py
+*.pickle
