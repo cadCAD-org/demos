@@ -18,39 +18,21 @@ def p_actionDecoder(_params, substep, sH, s):
         'UNI_burn': 0,        
     }
     
-    # Token prices
-    model_Token = s['DAI_balance'] / s['ETH_balance']
-    real_Token = uniswap_events['token_balance'][data_counter] / uniswap_events['eth_balance'][data_counter]
-    model_ETH = s['ETH_balance'] / s['DAI_balance']
-    real_ETH = uniswap_events['eth_balance'][data_counter] / uniswap_events['token_balance'][data_counter]
-
     eth_delta = uniswap_events['eth_delta'][data_counter]
     token_delta = uniswap_events['token_delta'][data_counter]
     event = uniswap_events['event'][data_counter]
     action['action_id'] = event
-    
+
     if event == 'TokenPurchase':
-        if classifier(eth_delta, token_delta, _params['c_rule']) == 'Conv':
-            if model_Token >= real_Token * (1 - _params['conv_tolerance']):
-                action['eth_sold'] = eth_delta
-            else:
-                pass
-        else:
-            if real_Token > model_Token:
-                action['eth_sold'] = eth_delta # not really eth_delta, it varies depending on the coin balances
-            else:
-                pass
+        model_Token = int(getInputPrice(token_delta, s['DAI_balance'], s['ETH_balance'], _params))
+        real_Token = int(getInputPrice(token_delta, uniswap_events['token_balance'][data_counter],
+                                    uniswap_events['eth_balance'][data_counter], _params))
+        action['eth_sold'] = getTradeDecision(eth_delta, token_delta, model_Token, real_Token, _params)
     elif event == 'EthPurchase':
-        if classifier(eth_delta, token_delta, _params['c_rule']) == 'Conv':
-            if model_ETH >= real_ETH * (1 - _params['conv_tolerance']):
-                action['tokens_sold'] = token_delta
-            else:
-                pass
-        else:
-            if real_ETH > model_ETH:
-                action['tokens_sold'] = token_delta # not really eth_delta, it varies depending on the coin balances
-            else:
-                pass
+        model_ETH = int(getInputPrice(eth_delta, s['ETH_balance'], s['DAI_balance'], _params))
+        real_ETH = int(getInputPrice(eth_delta, uniswap_events['eth_balance'][data_counter],
+                                    uniswap_events['token_balance'][data_counter], _params))
+        action['tokens_sold'] = getTradeDecision(token_delta, eth_delta, model_ETH, real_ETH, _params)
     elif event == 'AddLiquidity':
         action['eth_deposit'] = eth_delta
     elif event == 'Transfer':
@@ -179,3 +161,11 @@ def classifier(eth_delta, token_delta, c_rule):
       return "Conv"
     else:
       return "Arb"
+
+def getTradeDecision(sold_delta, purchased_delta, model_price, real_price, _params):
+    if classifier(sold_delta, purchased_delta, _params['c_rule']) == 'Conv':
+        if model_price >= real_price * (1 - _params['conv_tolerance']):
+            return sold_delta
+    else:
+        if real_price > model_price:
+            return sold_delta # not really sold_delta, it varies depending on the coin balances
