@@ -23,14 +23,14 @@ def p_actionDecoder(_params, substep, sH, s):
     action['action_id'] = event
 
     if event == 'TokenPurchase':
-        model_Token = int(getInputPrice(token_delta, s['DAI_balance'], s['ETH_balance'], _params))
-        real_Token = int(getInputPrice(token_delta, uniswap_events['token_balance'][data_counter],
-                                    uniswap_events['eth_balance'][data_counter], _params))
+        model_Token = int(getInputPrice(eth_delta, s['ETH_balance'], s['DAI_balance'], _params))
+        real_Token = int(getInputPrice(eth_delta, uniswap_events['eth_balance'][data_counter],
+                                    uniswap_events['token_balance'][data_counter], _params))
         action['eth_sold'] = getTradeDecision(eth_delta, token_delta, model_Token, real_Token, _params)
     elif event == 'EthPurchase':
-        model_ETH = int(getInputPrice(eth_delta, s['ETH_balance'], s['DAI_balance'], _params))
-        real_ETH = int(getInputPrice(eth_delta, uniswap_events['eth_balance'][data_counter],
-                                    uniswap_events['token_balance'][data_counter], _params))
+        model_ETH = int(getInputPrice(token_delta, s['DAI_balance'], s['ETH_balance'], _params))
+        real_ETH = int(getInputPrice(token_delta, uniswap_events['token_balance'][data_counter],
+                                    uniswap_events['eth_balance'][data_counter], _params))
         action['tokens_sold'] = getTradeDecision(token_delta, eth_delta, model_ETH, real_ETH, _params)
     elif event == 'AddLiquidity':
         action['eth_deposit'] = eth_delta
