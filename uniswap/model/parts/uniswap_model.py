@@ -1,7 +1,6 @@
 # Policies
 
 def p_actionDecoder(_params, substep, sH, s):
-    #print(_params)
     uniswap_events = _params[0]['uniswap_events']
     
     prev_timestep = s['timestep']
@@ -163,9 +162,10 @@ def classifier(eth_delta, token_delta, c_rule):
       return "Arb"
 
 def getTradeDecision(sold_delta, purchased_delta, model_price, real_price, _params):
-    if classifier(sold_delta, purchased_delta, _params['c_rule']) == 'Conv':
-        if model_price >= real_price * (1 - _params['conv_tolerance']):
+    if classifier(sold_delta, purchased_delta, _params[0]['c_rule']) == 'Conv':
+        if model_price >= real_price * (1 - _params[0]['conv_tolerance']):
             return sold_delta
+        else:
+            return 0
     else:
-        if real_price > model_price:
-            return sold_delta # not really sold_delta, it varies depending on the coin balances
+        return sold_delta
