@@ -161,11 +161,11 @@ def classifier(eth_delta, token_delta, c_rule):
     else:
       return "Arb"
 
-def getTradeDecision(sold_delta, purchased_delta, model_price, real_price, _params):
-    if classifier(sold_delta, purchased_delta, _params[0]['c_rule']) == 'Conv':
+def getTradeDecision(input_amount, output_amount, model_price, real_price, _params):
+    if classifier(input_amount, output_amount, _params[0]['c_rule']) == 'Conv':
         if model_price >= real_price * (1 - _params[0]['conv_tolerance']):
-            return sold_delta
+            return input_amount
         else:
             return 0
     else:
-        return sold_delta
+        return input_amount
