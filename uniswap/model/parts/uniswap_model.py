@@ -163,9 +163,19 @@ def classifier(eth_delta, token_delta, c_rule):
 
 def getTradeDecision(sold_delta, purchased_delta, model_price, real_price, _params):
     if classifier(sold_delta, purchased_delta, _params[0]['c_rule']) == 'Conv':
-        if model_price >= real_price * (1 - _params[0]['conv_tolerance']):
-            return sold_delta
-        else:
-            return 0
+        #if model_price >= real_price * (1 - _params[0]['conv_tolerance']):
+        return sold_delta
+        #else:
+        #   return 0
     else:
         return sold_delta
+
+
+def arbitrageTraderCalc(input_delta, output_delta, input_reserve, output_reserve, _params):
+    extern_price_ref = int(input_delta // output_delta)
+    model_price_ref = int(input_reserve // output_reserve)
+    
+    if(extern_price_ref < model_price_ref):
+        #one type of transac
+    else:
+        #inverse
