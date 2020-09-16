@@ -18,7 +18,7 @@ def run(drop_midsteps: bool=True) -> pd.DataFrame:
     Each line represents an iteration of the parameter-sweep combinations.
     """
     exec_mode = ExecutionMode()
-    multi_mode_ctx = ExecutionContext(context=exec_mode.multi_mode)
+    multi_mode_ctx = ExecutionContext(context=exec_mode.multi_proc)
     run = Executor(exec_context=multi_mode_ctx, configs=configs)
     raw_result, _, _ = run.execute()
     results = pd.DataFrame(raw_result)
