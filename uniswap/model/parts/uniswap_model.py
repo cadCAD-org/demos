@@ -1,3 +1,5 @@
+from math import sqrt
+
 # Policies
 
 def p_actionDecoder(_params, substep, sH, s):
@@ -23,15 +25,15 @@ def p_actionDecoder(_params, substep, sH, s):
     action['action_id'] = event
 
     if event == 'TokenPurchase':
-        model_Token = int(getInputPrice(eth_delta, s['ETH_balance'], s['DAI_balance'], _params))
-        real_Token = int(getInputPrice(eth_delta, uniswap_events['eth_balance'][data_counter],
+        model_Token = int(get_input_price(eth_delta, s['ETH_balance'], s['DAI_balance'], _params))
+        real_Token = int(get_input_price(eth_delta, uniswap_events['eth_balance'][data_counter],
                                     uniswap_events['token_balance'][data_counter], _params))
-        action['eth_sold'] = getTradeDecision(eth_delta, token_delta, model_Token, real_Token, _params)
+        action['eth_sold'] = get_trade_decision(eth_delta, token_delta, s['ETH_balance'], s['DAI_balance'], model_Token, real_Token, _params)
     elif event == 'EthPurchase':
-        model_ETH = int(getInputPrice(token_delta, s['DAI_balance'], s['ETH_balance'], _params))
-        real_ETH = int(getInputPrice(token_delta, uniswap_events['token_balance'][data_counter],
+        model_ETH = int(get_input_price(token_delta, s['DAI_balance'], s['ETH_balance'], _params))
+        real_ETH = int(get_input_price(token_delta, uniswap_events['token_balance'][data_counter],
                                     uniswap_events['eth_balance'][data_counter], _params))
-        action['tokens_sold'] = getTradeDecision(token_delta, eth_delta, model_ETH, real_ETH, _params)
+        action['tokens_sold'] = get_trade_decision(token_delta, eth_delta, s['DAI_balance'], s['ETH_balance'], model_ETH, real_ETH, _params)
     elif event == 'AddLiquidity':
         action['eth_deposit'] = eth_delta
     elif event == 'Transfer':
@@ -94,7 +96,7 @@ def s_ethToToken_DAI(_params, substep, sH, s, _input):
     if eth_sold == 0:
         return ('DAI_balance', token_reserve)
     else:
-        tokens_bought = int(getInputPrice(eth_sold, eth_reserve, token_reserve, _params))
+        tokens_bought = int(get_input_price(eth_sold, eth_reserve, token_reserve, _params))
         return ('DAI_balance', token_reserve - tokens_bought)
 
 def s_tokenToEth_ETH(_params, substep, sH, s, _input):
@@ -104,7 +106,7 @@ def s_tokenToEth_ETH(_params, substep, sH, s, _input):
         return ('ETH_balance', eth_reserve)
     else:
         token_reserve = int(s['DAI_balance'])
-        eth_bought = int(getInputPrice(tokens_sold, token_reserve, eth_reserve, _params))
+        eth_bought = int(get_input_price(tokens_sold, token_reserve, eth_reserve, _params))
         return ('ETH_balance', eth_reserve - eth_bought)
     
 def s_tokenToEth_DAI(_params, substep, sH, s, _input):
@@ -157,15 +159,33 @@ def get_input_price(input_amount, input_reserve, output_reserve, _params):
 
 def classifier(eth_delta, token_delta, c_rule):
     if (token_delta / (10 ** (18-c_rule))).is_integer() or (eth_delta / (10 ** (18-c_rule))).is_integer() :
-      return "Conv"
+      return "Arb"
     else:
       return "Arb"
 
-def get_trade_decision(input_amount, output_amount, model_price, real_price, _params):
+def get_trade_decision(input_amount, output_amount, input_reserve, output_reserve, model_price, real_price, _params):
     if classifier(input_amount, output_amount, _params[0]['c_rule']) == 'Conv':
         if model_price >= real_price * (1 - _params[0]['conv_tolerance']):
             return input_amount
         else:
             return 0
     else:
+        spot_price = input_reserve / output_reserve
+        new_input_amount = get_input_amount(spot_price, input_reserve, output_reserve, _params)
+
+        print(new_input_amount, input_amount)
         return input_amount
+
+#  action['eth_sold'] = getTradeDecision(eth_delta, token_delta, model_Token, real_Token, _params)
+def get_input_amount(spot_price, input_reserve, output_reserve, _params):
+    a = _params[0]['fee_numerator']
+    b = _params[0]['fee_denominator']
+    I = input_reserve
+    O = output_reserve
+    P = spot_price
+    # print(a, b, I, O)
+    # print(P)
+    # print((I*b - I*a)**2 + 4*P*O*I*a*b)
+    input_amount = (-(I*b + I*a) +  sqrt((I*b - I*a)**2 + 4*P*O*I*a*b)) / 2*a
+
+    return int(input_amount)
