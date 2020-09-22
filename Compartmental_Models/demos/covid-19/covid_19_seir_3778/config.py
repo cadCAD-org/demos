@@ -1,7 +1,7 @@
 MONTE_CARLO_RUNS = 1 # N monte carlo runs
 
-from cadCAD.configuration import Experiment
 from cadCAD.configuration.utils import config_sim
+from cadCAD.configuration import Experiment
 from .model.state_variables import genesis_states
 from .model.partial_state_update_block import partial_state_update_block
 from .model.sys_params import sys_params as sys_params

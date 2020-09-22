@@ -18,6 +18,7 @@ def run(drop_midsteps: bool=True) -> pd.DataFrame:
     Each line represents an iteration of the parameter-sweep combinations.
     """
     exec_mode = ExecutionMode()
+
     multi_mode_ctx = ExecutionContext(context=exec_mode.multi_mode)
     run = Executor(exec_context=multi_mode_ctx, configs=configs)
     raw_result, tensor_field, sessions = run.execute()
