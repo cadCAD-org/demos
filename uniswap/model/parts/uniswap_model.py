@@ -146,7 +146,6 @@ def s_mechanismHub_UNI(_params, substep, sH, s, _input):
         return s_removeLiquidity_UNI(_params, substep, sH, s, _input)
     return('UNI_supply', s['UNI_supply'])
 
-
 # AUX
 
 def get_input_price(input_amount, input_reserve, output_reserve, _params):
@@ -183,9 +182,7 @@ def get_input_amount(spot_price, input_reserve, output_reserve, _params):
     I = input_reserve
     O = output_reserve
     P = spot_price
-    # print(a, b, I, O)
-    # print(P)
-    # print((I*b - I*a)**2 + 4*P*O*I*a*b)
-    input_amount = (-(I*b + I*a) +  sqrt((I*b - I*a)**2 + 4*P*O*I*a*b)) / 2*a
+    
+    input_amount = (sqrt((I*b - I*a)**2 + 4*P*O*I*a*b)-(I*b + I*a)) / (2*a)
 
     return int(input_amount)
