@@ -169,7 +169,7 @@ def get_trade_decision(input_amount, output_amount, input_reserve, output_reserv
         else:
             return 0
     else:
-        spot_price = (input_reserve + input_amount) / (output_reserve + outpput_amount) 
+        spot_price = (input_reserve + input_amount) / (output_reserve + output_amount) 
         new_input_amount = get_input_amount(spot_price, input_reserve, output_reserve, _params)
 
         return input_amount
