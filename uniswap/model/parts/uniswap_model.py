@@ -175,14 +175,16 @@ def get_trade_decision(input_amount, output_amount, input_reserve, output_reserv
         print(new_input_amount, input_amount)
         return input_amount
 
-#  action['eth_sold'] = getTradeDecision(eth_delta, token_delta, model_Token, real_Token, _params)
 def get_input_amount(spot_price, input_reserve, output_reserve, _params):
-    a = _params[0]['fee_numerator']
-    b = _params[0]['fee_denominator']
-    I = input_reserve
-    O = output_reserve
-    P = spot_price
-    
-    input_amount = (sqrt((I*b - I*a)**2 + 4*P*O*I*a*b)-(I*b + I*a)) / (2*a)
+    a = 997
+    b = 1000
+    I_t = input_reserve
+    O_t = output_reserve
+    P_t1 = spot_price
+    input_amount = (
+        (-(I_t*b + I_t*a)) + sqrt(
+            ((I_t*b - I_t*a)**2) + (4*P_t1*O_t*I_t*a*b)
+        )
+    )  / (2*a)
 
     return int(input_amount)
