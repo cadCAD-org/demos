@@ -176,8 +176,8 @@ def get_trade_decision(input_amount, output_amount, input_reserve, output_reserv
         return input_amount
 
 def get_input_amount(spot_price, input_reserve, output_reserve, _params):
-    a = 997
-    b = 1000
+    a = _params[0]['fee_numerator']
+    b = _params[0]['fee_denominator']
     I_t = input_reserve
     O_t = output_reserve
     P_t1 = spot_price
