@@ -2,10 +2,10 @@
 from cadCAD.engine import ExecutionMode, ExecutionContext, Executor
 
 # Simulation configs, input any new simulations here
-from covid_19_sir_r0 import config
+
+from covid_19_sir import config
 from covid_19_seir import config
 from covid_19_seird import config
-from covid_19_seir_3778 import config
 from covid_19_stochastic import config
 
 from cadCAD import configs

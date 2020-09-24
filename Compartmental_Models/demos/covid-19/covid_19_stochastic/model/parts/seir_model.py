@@ -13,8 +13,8 @@ def p_exposed_growth(params, substep, state_history, prev_state):
     npr = rngs[prev_state['run']-1]
 
     r0 = init_param_dist(params['r0_dist'], npr).rvs(1)
-    gamma = 1/(init_param_dist(params['gamma_dist'], npr).rvs(1))
-    beta = r0*gamma
+    delta = 1/(init_param_dist(params['delta_dist'], npr).rvs(1))
+    beta = r0*delta
 
     SE = npr.binomial(S,
                       expon(scale=1/(beta*I/N)).cdf(1))
@@ -26,10 +26,10 @@ def p_infected_growth(params, substep, state_history, prev_state):
     E = prev_state['exposed']
     npr = rngs[prev_state['run']-1]
 
-    alpha = 1/(init_param_dist(params['alpha_dist'], npr).rvs(1))
+    gamma = 1/(init_param_dist(params['gamma_dist'], npr).rvs(1))
 
     EI = npr.binomial(E,
-                      expon(scale=1/alpha).cdf(1))[0]
+                      expon(scale=1/gamma).cdf(1))[0]
 
     return {'infected_growth': np.ceil(EI)}
 
@@ -38,10 +38,10 @@ def p_recovered_growth(params, substep, state_history, prev_state):
     I = prev_state['infected']
     npr = rngs[prev_state['run']-1]
 
-    gamma = 1/(init_param_dist(params['gamma_dist'], npr).rvs(1))
+    delta = 1/(init_param_dist(params['delta_dist'], npr).rvs(1))
     
     IR = npr.binomial(I,
-                      expon(scale=1/gamma).cdf(1))[0]
+                      expon(scale=1/delta).cdf(1))[0]
 
     return {'recovered_growth': np.ceil(IR)}
 
