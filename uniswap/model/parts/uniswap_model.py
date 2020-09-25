@@ -158,7 +158,7 @@ def get_input_price(input_amount, input_reserve, output_reserve, _params):
 
 def classifier(eth_delta, token_delta, c_rule):
     if (token_delta / (10 ** (18-c_rule))).is_integer() or (eth_delta / (10 ** (18-c_rule))).is_integer() :
-      return "Arb"
+      return "Conv"
     else:
       return "Arb"
 
@@ -170,7 +170,7 @@ def get_trade_decision(input_amount, output_amount, input_reserve, output_reserv
             return 0
     else:
         spot_price = (input_reserve + input_amount) / (output_reserve + output_amount) 
-        new_input_amount = get_input_amount(spot_price, input_reserve, output_reserve, _params)
+        input_amount = get_input_amount(spot_price, input_reserve, output_reserve, _params)
 
         return input_amount
 
