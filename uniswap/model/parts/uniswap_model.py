@@ -3,7 +3,7 @@ from math import sqrt
 # Policies
 
 def p_actionDecoder(_params, substep, sH, s):
-    uniswap_events = _params[0]['uniswap_events']
+    uniswap_events = _params['uniswap_events']
     
     prev_timestep = s['timestep']
     if substep > 1:
@@ -149,8 +149,8 @@ def s_mechanismHub_UNI(_params, substep, sH, s, _input):
 # AUX
 
 def get_input_price(input_amount, input_reserve, output_reserve, _params):
-    fee_numerator = _params[0]['fee_numerator']
-    fee_denominator = _params[0]['fee_denominator']
+    fee_numerator = _params['fee_numerator']
+    fee_denominator = _params['fee_denominator']
     input_amount_with_fee = input_amount * fee_numerator
     numerator = input_amount_with_fee * output_reserve
     denominator = (input_reserve * fee_denominator) + input_amount_with_fee
@@ -163,8 +163,8 @@ def classifier(eth_delta, token_delta, c_rule):
       return "Arb"
 
 def get_trade_decision(input_amount, output_amount, input_reserve, output_reserve, model_price, real_price, _params):
-    if classifier(input_amount, output_amount, _params[0]['c_rule']) == 'Conv':
-        if model_price >= real_price * (1 - _params[0]['conv_tolerance']):
+    if classifier(input_amount, output_amount, _params['c_rule']) == 'Conv':
+        if model_price >= real_price * (1 - _params['conv_tolerance']):
             return input_amount
         else:
             return 0
@@ -175,8 +175,8 @@ def get_trade_decision(input_amount, output_amount, input_reserve, output_reserv
         return input_amount
 
 def get_input_amount(spot_price, input_reserve, output_reserve, _params):
-    a = _params[0]['fee_numerator']
-    b = _params[0]['fee_denominator']
+    a = _params['fee_numerator']
+    b = _params['fee_denominator']
     I_t = input_reserve
     O_t = output_reserve
     P_t1 = spot_price
