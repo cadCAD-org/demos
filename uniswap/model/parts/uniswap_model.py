@@ -10,7 +10,7 @@ def p_actionDecoder(_params, substep, sH, s):
         prev_timestep -= 1
         
     #skip the first two events, as they are already accounted for in the initial conditions of the system
-    data_counter = prev_timestep + 2 
+    t = prev_timestep + 2 
     
     action = {
         'eth_sold': 0,
@@ -18,26 +18,32 @@ def p_actionDecoder(_params, substep, sH, s):
         'eth_deposit': 0,
         'UNI_burn': 0,        
     }
-    
-    eth_delta = uniswap_events['eth_delta'][data_counter]
-    token_delta = uniswap_events['token_delta'][data_counter]
-    event = uniswap_events['event'][data_counter]
+
+    #Event variables
+    event = uniswap_events['event'][t]
     action['action_id'] = event
 
     if event == 'TokenPurchase':
-        model_Token = int(get_input_price(eth_delta, s['ETH_balance'], s['DAI_balance'], _params))
-        real_Token = int(get_input_price(eth_delta, uniswap_events['eth_balance'][data_counter],
-                                    uniswap_events['token_balance'][data_counter], _params))
-        action['eth_sold'] = get_trade_decision(eth_delta, token_delta, s['ETH_balance'], s['DAI_balance'], model_Token, real_Token, _params)
+        I_t = s['ETH_balance']
+        O_t = s['DAI_balance']
+        I_t1 = uniswap_events['eth_balance'][t]
+        O_t1 = uniswap_events['token_balance'][t]
+        delta_I = uniswap_events['eth_delta'][t]
+        delta_O = uniswap_events['token_delta'][t]
+        action['eth_sold'] = get_trade_decision(delta_I, delta_O, I_t, O_t, I_t1, O_t1, _params)
     elif event == 'EthPurchase':
-        model_ETH = int(get_input_price(token_delta, s['DAI_balance'], s['ETH_balance'], _params))
-        real_ETH = int(get_input_price(token_delta, uniswap_events['token_balance'][data_counter],
-                                    uniswap_events['eth_balance'][data_counter], _params))
-        action['tokens_sold'] = get_trade_decision(token_delta, eth_delta, s['DAI_balance'], s['ETH_balance'], model_ETH, real_ETH, _params)
+        I_t = s['DAI_balance']
+        O_t = s['ETH_balance']
+        I_t1 = uniswap_events['token_balance'][t]
+        O_t1 = uniswap_events['eth_balance'][t]
+        delta_I = uniswap_events['token_delta'][t]
+        delta_O = uniswap_events['eth_delta'][t]
+        action['tokens_sold'] = get_trade_decision(delta_I, delta_O, I_t, O_t, I_t1, O_t1, _params)
     elif event == 'AddLiquidity':
-        action['eth_deposit'] = eth_delta
+        delta_I = uniswap_events['eth_delta'][t]
+        action['eth_deposit'] = delta_I
     elif event == 'Transfer':
-        UNI_delta = uniswap_events['uni_delta'][data_counter]
+        UNI_delta = uniswap_events['uni_delta'][t]
         if UNI_delta < 0:
             action['UNI_burn'] = -UNI_delta
 
@@ -85,34 +91,34 @@ def s_removeLiquidity_DAI(_params, substep, sH, s, _input):
     return ('DAI_balance', int(token_reserve - token_amount))
 
 def s_ethToToken_ETH(_params, substep, history, s, _input):
-    eth_sold = int(_input['eth_sold']) #amount of ETH being sold by the user
-    eth_reserve = int(s['ETH_balance'])
-    return ('ETH_balance', eth_reserve + eth_sold)
+    delta_I = int(_input['eth_sold']) #amount of ETH being sold by the user
+    I_t = int(s['ETH_balance'])
+    return ('ETH_balance', I_t + delta_I)
 
 def s_ethToToken_DAI(_params, substep, sH, s, _input):
-    eth_sold = int(_input['eth_sold']) #amount of ETH being sold by the user
-    eth_reserve = int(s['ETH_balance'])
-    token_reserve = int(s['DAI_balance'])
-    if eth_sold == 0:
-        return ('DAI_balance', token_reserve)
+    delta_I = int(_input['eth_sold']) #amount of ETH being sold by the user
+    I_t = int(s['ETH_balance'])
+    O_t = int(s['DAI_balance'])
+    if delta_I == 0:
+        return ('DAI_balance', O_t)
     else:
-        tokens_bought = int(get_input_price(eth_sold, eth_reserve, token_reserve, _params))
-        return ('DAI_balance', token_reserve - tokens_bought)
+        delta_O = int(get_input_price(delta_I, I_t, O_t, _params))
+        return ('DAI_balance', O_t - delta_O)
 
 def s_tokenToEth_ETH(_params, substep, sH, s, _input):
-    tokens_sold = int(_input['tokens_sold']) #amount of tokens being sold by the user
-    eth_reserve = int(s['ETH_balance'])
-    if tokens_sold == 0:
-        return ('ETH_balance', eth_reserve)
+    delta_I = int(_input['tokens_sold']) #amount of tokens being sold by the user
+    O_t = int(s['ETH_balance'])
+    I_t = int(s['DAI_balance'])
+    if delta_I == 0:
+        return ('ETH_balance', O_t)
     else:
-        token_reserve = int(s['DAI_balance'])
-        eth_bought = int(get_input_price(tokens_sold, token_reserve, eth_reserve, _params))
-        return ('ETH_balance', eth_reserve - eth_bought)
+        delta_O = int(get_input_price(delta_I, I_t, O_t, _params))
+        return ('ETH_balance', O_t - delta_O)
     
 def s_tokenToEth_DAI(_params, substep, sH, s, _input):
-    tokens_sold = int(_input['tokens_sold']) #amount of tokens being sold by the user
-    token_reserve = int(s['DAI_balance'])
-    return ('DAI_balance', token_reserve + tokens_sold)
+    delta_I = int(_input['tokens_sold']) #amount of tokens being sold by the user
+    I_t = int(s['DAI_balance'])
+    return ('DAI_balance', I_t + delta_I)
 
 def s_mechanismHub_DAI(_params, substep, sH, s, _input):
     action = _input['action_id']
@@ -148,42 +154,41 @@ def s_mechanismHub_UNI(_params, substep, sH, s, _input):
 
 # AUX
 
-def get_input_price(input_amount, input_reserve, output_reserve, _params):
+def get_input_price(delta_I, I_t, O_t, _params):
     fee_numerator = _params['fee_numerator']
     fee_denominator = _params['fee_denominator']
-    input_amount_with_fee = input_amount * fee_numerator
-    numerator = input_amount_with_fee * output_reserve
-    denominator = (input_reserve * fee_denominator) + input_amount_with_fee
+    delta_I_with_fee = delta_I * fee_numerator
+    numerator = delta_I_with_fee * O_t
+    denominator = (I_t * fee_denominator) + delta_I_with_fee
     return int(numerator // denominator)
 
-def classifier(eth_delta, token_delta, c_rule):
-    if (token_delta / (10 ** (18-c_rule))).is_integer() or (eth_delta / (10 ** (18-c_rule))).is_integer() :
+def classifier(delta_I, delta_O, c_rule):
+    if (delta_I / (10 ** (18-c_rule))).is_integer() or (delta_O / (10 ** (18-c_rule))).is_integer() :
       return "Conv"
     else:
       return "Arb"
 
-def get_trade_decision(input_amount, output_amount, input_reserve, output_reserve, model_price, real_price, _params):
-    if classifier(input_amount, output_amount, _params['c_rule']) == 'Conv':
-        if model_price >= real_price * (1 - _params['conv_tolerance']):
-            return input_amount
+def get_trade_decision(delta_I, delta_O, I_t, O_t, I_t1, O_t1, _params):
+    if classifier(delta_I, delta_O, _params['c_rule']) == 'Conv':
+        calculated_delta_O = int(get_input_price(delta_I, I_t, O_t, _params))
+        historic_delta_O = int(get_input_price(delta_I, I_t1, O_t1, _params))
+        if calculated_delta_O >= historic_delta_O * (1 - _params['conv_tolerance']):
+            return delta_I
         else:
             return 0
     else:
-        spot_price = (input_reserve + input_amount) / (output_reserve + output_amount) 
-        input_amount = get_input_amount(spot_price, input_reserve, output_reserve, _params)
+        P = (I_t + delta_I) / (O_t + delta_O)
+        delta_I = get_delta_I(P, I_t, O_t, _params)
 
-        return input_amount
+        return delta_I
 
-def get_input_amount(spot_price, input_reserve, output_reserve, _params):
+def get_delta_I(P, I_t, O_t, _params):
     a = _params['fee_numerator']
     b = _params['fee_denominator']
-    I_t = input_reserve
-    O_t = output_reserve
-    P_t1 = spot_price
-    input_amount = (
+    delta_I = (
         (-(I_t*b + I_t*a)) + sqrt(
-            ((I_t*b - I_t*a)**2) + (4*P_t1*O_t*I_t*a*b)
+            ((I_t*b - I_t*a)**2) + (4*P*O_t*I_t*a*b)
         )
     )  / (2*a)
 
-    return int(input_amount)
+    return int(delta_I)
