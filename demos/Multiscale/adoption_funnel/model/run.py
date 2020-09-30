@@ -1,0 +1,60 @@
+import pandas as pd
+from .parts.utils import * 
+from model import config 
+from cadCAD.engine import ExecutionMode, ExecutionContext,Executor
+from cadCAD import configs
+
+
+def get_M(k, v):
+    if k == 'sim_config':
+        k, v = 'M', v['M']
+    return k, v
+
+config_ids = [
+    dict(
+        get_M(k, v) for k, v in config.__dict__.items() if k in ['simulation_id', 'run_id', 'sim_config', 'subset_id']
+    ) for config in configs
+]
+
+
+def run(drop_midsteps=True):
+    '''
+    Definition:
+    Run simulation
+    '''
+    exec_mode = ExecutionMode()
+    local_mode_ctx = ExecutionContext(context=exec_mode.local_mode)
+
+    simulation = Executor(exec_context=local_mode_ctx, configs=configs)
+    raw_system_events, tensor_field, sessions = simulation.execute()
+    # Result System Events DataFrame
+    df = pd.DataFrame(raw_system_events)
+    
+    config_ids = [
+    dict(
+        get_M(k, v) for k, v in config.__dict__.items() if k in ['simulation_id', 'run_id', 'sim_config', 'subset_id']
+    ) for config in configs
+]
+    
+    results = pd.DataFrame()
+    for i, config_id in enumerate(config_ids):
+        params = config_id['M']
+        result_record = pd.DataFrame.from_records([tuple([i for i in params.values()])], columns=list(params.keys()))
+        sub_df = df[df.subset == config_id['subset_id']]
+
+        max_substep = max(sub_df.substep)
+        is_droppable = (sub_df.substep != max_substep) & (sub_df.substep != 0)
+        sub_df.drop(sub_df[is_droppable].index, inplace=True)
+
+
+        
+
+        result_record['dataset'] = [sub_df]
+        results = results.append(result_record)
+
+    return results.reset_index()
+    
+
+
+
+
