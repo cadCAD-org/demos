@@ -1,4 +1,4 @@
-from .transaction_aux import get_input_price
+from .policy_aux import get_input_price
 
 def addLiquidity_UNI(_params, substep, sH, s, _input):
     total_liquidity = int(s['UNI_supply'])
@@ -54,7 +54,7 @@ def ethToToken_DAI(_params, substep, sH, s, _input):
         return ('DAI_balance', O_t - delta_O)
 
 def tokenToEth_ETH(_params, substep, sH, s, _input):
-    delta_I = int(_input['tokensold']) #amount of tokens being sold by the user
+    delta_I = int(_input['tokens_sold']) #amount of tokens being sold by the user
     O_t = int(s['ETH_balance'])
     I_t = int(s['DAI_balance'])
     if delta_I == 0:
@@ -64,6 +64,6 @@ def tokenToEth_ETH(_params, substep, sH, s, _input):
         return ('ETH_balance', O_t - delta_O)
     
 def tokenToEth_DAI(_params, substep, sH, s, _input):
-    delta_I = int(_input['tokensold']) #amount of tokens being sold by the user
+    delta_I = int(_input['tokens_sold']) #amount of tokens being sold by the user
     I_t = int(s['DAI_balance'])
     return ('DAI_balance', I_t + delta_I)
