@@ -1,5 +1,48 @@
 from math import sqrt
 
+
+def get_parameters(uniswap_events, event, s, t):
+    if(event == "TokenPurchase"):
+        I_t = s['ETH_balance']
+        O_t = s['DAI_balance']
+        I_t1 = uniswap_events['eth_balance'][t]
+        O_t1 = uniswap_events['token_balance'][t]
+        delta_I = uniswap_events['eth_delta'][t]
+        delta_O = uniswap_events['token_delta'][t]
+        action_key = 'eth_sold'
+    else:
+        I_t = s['DAI_balance']
+        O_t = s['ETH_balance']
+        I_t1 = uniswap_events['token_balance'][t]
+        O_t1 = uniswap_events['eth_balance'][t]
+        delta_I = uniswap_events['token_delta'][t]
+        delta_O = uniswap_events['eth_delta'][t]
+        action_key = 'tokens_sold'
+    
+    return I_t, O_t, I_t1, O_t1, delta_I, delta_O, action_key
+
+def reverse_event(event):
+    if(event == "TokenPurchase"):
+        new_event = 'EthPurchase'
+    else:
+        new_event = 'TokenPurchase'
+    return new_event
+
+def get_trade_decision(delta_I, delta_O, I_t, O_t, I_t1, O_t1, _params):
+    if classifier(delta_I, delta_O, _params['c_rule']) == 'Conv':
+        calculated_delta_O = int(get_input_price(delta_I, I_t, O_t, _params))
+        historic_delta_O = int(get_input_price(delta_I, I_t1, O_t1, _params))
+        if calculated_delta_O >= historic_delta_O * (1 - _params['conv_tolerance']):
+            return delta_I
+        else:
+            return 0
+    else:
+        P = (I_t + delta_I) / (O_t + delta_O)
+        actual_P = I_t / O_t
+        delta_I = get_delta_I(P, I_t, O_t, _params)
+
+        return delta_I
+
 def get_input_price(delta_I, I_t, O_t, _params):
     fee_numerator = _params['fee_numerator']
     fee_denominator = _params['fee_denominator']
@@ -13,20 +56,6 @@ def classifier(delta_I, delta_O, c_rule):
       return "Conv"
     else:
       return "Arb"
-
-def get_trade_decision(delta_I, delta_O, I_t, O_t, I_t1, O_t1, _params):
-    if classifier(delta_I, delta_O, _params['c_rule']) == 'Conv':
-        calculated_delta_O = int(get_input_price(delta_I, I_t, O_t, _params))
-        historic_delta_O = int(get_input_price(delta_I, I_t1, O_t1, _params))
-        if calculated_delta_O >= historic_delta_O * (1 - _params['conv_tolerance']):
-            return delta_I
-        else:
-            return 0
-    else:
-        P = (I_t + delta_I) / (O_t + delta_O)
-        delta_I = get_delta_I(P, I_t, O_t, _params)
-
-        return delta_I
 
 def get_delta_I(P, I_t, O_t, _params):
     a = _params['fee_numerator']
