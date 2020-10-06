@@ -16,6 +16,7 @@ partial_state_update_block = [
         'policies': {
         },
         'variables': {
+            'leaky_integral': update_leaky_integral,
             'integral': update_integral,
         }
     },

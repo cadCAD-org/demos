@@ -53,6 +53,33 @@ def store_Dt(params, step, sL, s, _input):
     return(key, value)
 
 
+
+def update_leaky_integral(params, step, sL, s, _input):
+    """
+    Given integral previous value I, and the last two errors [new_error, old_error] and time pased Dt
+        A = Dt*(new_error+old_error)/2
+        I = alpha^Dt *I + A  
+    """
+
+    new_error = s['error']['new']
+    old_error = s['error']['old']
+
+    e_bar = int((new_error+old_error)/2)
+
+    Dt = s['Dt']
+
+    area = e_bar*Dt
+
+    alpha = params['alpha']
+    remaing_frac = float(alpha/params['TOK'])**Dt
+
+    remaining = int(remaing_frac*s['leaky_integral'])
+
+    value = remaining+area
+    key = 'leaky_integral'
+
+    return(key, value)
+
 def update_integral(params, step, sL, s, _input):
     """
     Given integral previous value I, and the last two errors [new_error, old_error] and time pased Dt

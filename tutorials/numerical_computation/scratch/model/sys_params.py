@@ -14,11 +14,16 @@ initial_values = {
 }
 
 
+halflife=initial_values['SPY']/52 # weeklong halflife
+alpha = int(np.power(.5,float(1/halflife))*initial_values['TOK'])
+
+
 
 sys_params = {
     'expected_lag': [10],
     'minimum_period': [initial_values['SPH']],
     'correction_wt': [0.5],
     'noise_wt': [0.001],
+    'alpha': [alpha],
     'TOK':[initial_values['TOK']],
 }
