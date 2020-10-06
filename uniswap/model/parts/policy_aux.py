@@ -28,21 +28,6 @@ def reverse_event(event):
         new_event = 'TokenPurchase'
     return new_event
 
-def get_trade_decision(delta_I, delta_O, I_t, O_t, I_t1, O_t1, _params):
-    if classifier(delta_I, delta_O, _params['c_rule']) == 'Conv':
-        calculated_delta_O = int(get_input_price(delta_I, I_t, O_t, _params))
-        historic_delta_O = int(get_input_price(delta_I, I_t1, O_t1, _params))
-        if calculated_delta_O >= historic_delta_O * (1 - _params['conv_tolerance']):
-            return delta_I
-        else:
-            return 0
-    else:
-        P = (I_t + delta_I) / (O_t + delta_O)
-        actual_P = I_t / O_t
-        delta_I = get_delta_I(P, I_t, O_t, _params)
-
-        return delta_I
-
 def get_input_price(delta_I, I_t, O_t, _params):
     fee_numerator = _params['fee_numerator']
     fee_denominator = _params['fee_denominator']
