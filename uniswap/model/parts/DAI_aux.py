@@ -10,14 +10,11 @@ def addLiquidity_DAI(_params, substep, sH, s, _input):
     return ('DAI_balance', token_reserve + token_amount)
 
 
-
 def removeLiquidity_DAI(_params, substep, sH, s, _input):
-    total_liquidity = int(s['UNI_supply'])
     token_reserve = int(s['DAI_balance'])
-    amount = int(_input['UNI_burn'])
-    token_amount = int(amount * token_reserve // total_liquidity)
-    return ('DAI_balance', int(token_reserve - token_amount))
-
+    pct_amount = _input['UNI_pct']
+    amount = token_reserve * pct_amount
+    return ('DAI_balance', int(token_reserve - amount))
 
 
 def ethToToken_DAI(_params, substep, sH, s, _input):

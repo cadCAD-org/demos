@@ -7,5 +7,6 @@ def addLiquidity_UNI(_params, substep, sH, s, _input):
 
 def removeLiquidity_UNI(_params, substep, sH, s, _input):
     total_liquidity = int(s['UNI_supply'])
-    amount = int(_input['UNI_burn'])
+    pct_amount = _input['UNI_pct']
+    amount = total_liquidity * pct_amount
     return ('UNI_supply', int(total_liquidity - amount))
