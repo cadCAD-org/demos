@@ -8,7 +8,7 @@ def get_parameters(uniswap_events, event, s, t):
         I_t1 = uniswap_events['eth_balance'][t]
         O_t1 = uniswap_events['token_balance'][t]
         delta_I = uniswap_events['eth_delta'][t]
-        delta_O = uniswap_events['token_delta'][t]
+        delta_O = abs(uniswap_events['token_delta'][t])
         action_key = 'eth_sold'
     else:
         I_t = s['DAI_balance']
@@ -16,7 +16,7 @@ def get_parameters(uniswap_events, event, s, t):
         I_t1 = uniswap_events['token_balance'][t]
         O_t1 = uniswap_events['eth_balance'][t]
         delta_I = uniswap_events['token_delta'][t]
-        delta_O = uniswap_events['eth_delta'][t]
+        delta_O = abs(uniswap_events['eth_delta'][t])
         action_key = 'tokens_sold'
     
     return I_t, O_t, I_t1, O_t1, delta_I, delta_O, action_key
@@ -32,9 +32,9 @@ def get_input_price(delta_I, I_t, O_t, _params):
     fee_numerator = _params['fee_numerator']
     fee_denominator = _params['fee_denominator']
     delta_I_with_fee = delta_I * fee_numerator
-    numerator = delta_I_with_fee * O_t
-    denominator = (I_t * fee_denominator) + delta_I_with_fee
-    return int(numerator // denominator)
+    numerator = delta_I_with_fee * O_t                        
+    denominator = (I_t * fee_denominator) + delta_I_with_fee 
+    return int(numerator // denominator)                      
 
 def classifier(delta_I, delta_O, c_rule):
     if (delta_I / (10 ** (18-c_rule))).is_integer() or (delta_O / (10 ** (18-c_rule))).is_integer() :

@@ -20,7 +20,7 @@ def p_actionDecoder(_params, substep, sH, s):
         'tokens_sold': 0,
         'eth_deposit': 0,
         'UNI_burn': 0, 
-        'UNI_pct': 0      
+        'UNI_pct': 0,
     }
 
     #Event variables
@@ -33,10 +33,11 @@ def p_actionDecoder(_params, substep, sH, s):
             action[action_key] = delta_I
         elif classifier(delta_I, delta_O, _params['c_rule']) == "Conv":            #Convenience trader case
             calculated_delta_O = int(get_input_price(delta_I, I_t, O_t, _params))
-            historic_delta_O = int(get_input_price(delta_I, I_t1, O_t1, _params))
-            #if calculated_delta_O >= historic_delta_O * (1 - _params['conv_tolerance']):
-            action[action_key] = delta_I
-        else:            #Arbitrary trader case              
+            if calculated_delta_O >= delta_O * (1-_params['conv_tolerance']):
+                action[action_key] = delta_I
+            else:
+                action[action_key] = 0
+        else:            #Arbitrary trader case
             P = I_t1 / O_t1
             actual_P = I_t / O_t
             if(actual_P > P):
