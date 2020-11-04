@@ -6,11 +6,10 @@ def addLiquidity_ETH(_params, substep, sH, s, _input):
 
 
 def removeLiquidity_ETH(_params, substep, sH, s, _input):
-    total_liquidity = int(s['UNI_supply'])
     eth_reserve = int(s['ETH_balance'])
-    amount = int(_input['UNI_burn'])
-    eth_amount = int(amount * eth_reserve // total_liquidity)
-    return ('ETH_balance', int(eth_reserve - eth_amount))
+    pct_amount = _input['UNI_pct']
+    amount = pct_amount * eth_reserve
+    return ('ETH_balance', int(eth_reserve - amount))
 
 
 def ethToToken_ETH(_params, substep, history, s, _input):
