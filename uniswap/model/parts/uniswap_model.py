@@ -17,7 +17,8 @@ def p_actionDecoder(_params, substep, sH, s):
         'eth_sold': 0,
         'tokens_sold': 0,
         'eth_deposit': 0,
-        'UNI_burn': 0,        
+        'UNI_burn': 0,  
+        'UNI_pct': 0      
     }
 
     #Event variables
@@ -28,7 +29,7 @@ def p_actionDecoder(_params, substep, sH, s):
         I_t, O_t, I_t1, O_t1, delta_I, delta_O, action_key = get_parameters(uniswap_events, event, s, t)
         if classifier(delta_I, delta_O, _params[0]['c_rule']) == "Conv":
             calculated_delta_O = int(get_input_price(delta_I, I_t, O_t, _params[0]))
-            historic_delta_O = int(get_input_price(delta_I, I_t1, O_t1, _params[0]))
+            historic_delta_O = abs(uniswap_events['token_delta'][t])
             if calculated_delta_O >= historic_delta_O * (1 - _params[0]['conv_tolerance']):
                 action[action_key] = delta_I
         else:
@@ -39,7 +40,7 @@ def p_actionDecoder(_params, substep, sH, s):
                 P = I_t1 / O_t1
                 actual_P = I_t / O_t
                 delta_I = get_delta_I(P, I_t, O_t, _params[0])
-                delta_O = get_input_price(delta_I, I_t, O_t, _params[0])
+                delta_O = abs(uniswap_events['eth_delta'][t])
                 if(unprofitable_transaction(t, "inverted", P, actual_P, delta_I, delta_O, action_key, uniswap_events['convert_rate'][t], _params)):
                     delta_I = 0
                 action[action_key] = delta_I
@@ -54,8 +55,10 @@ def p_actionDecoder(_params, substep, sH, s):
         action['eth_deposit'] = delta_I
     elif event == 'Transfer':
         UNI_delta = uniswap_events['uni_delta'][t]
+        UNI_supply = uniswap_events['UNI_supply'][t-1]
         if UNI_delta < 0:
             action['UNI_burn'] = -UNI_delta
+            action['UNI_pct'] = -UNI_delta / UNI_supply
 
     del uniswap_events
     return action
