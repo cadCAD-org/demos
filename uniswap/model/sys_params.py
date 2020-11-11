@@ -6,5 +6,5 @@ sys_params = {
     'uniswap_events': [pd.read_pickle('uniswap_events.pickle')],
     'c_rule': [13],
     'conv_tolerance': [0.05],
-    'fix_cost': [1]
+    'fix_cost': [1],
 }
