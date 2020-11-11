@@ -53,7 +53,7 @@ def get_delta_I(P, I_t, O_t, _params):
     return int(delta_I)
 
 def unprofitable_transaction(t, type_of, P, actual_P, delta_I, delta_O, action_key, convert_rate, _params):
-    fix_cost = int((_params[0]['fix_cost']/convert_rate)*(10**18))
+    fix_cost = int((_params['fix_cost']/convert_rate)*(10**18))
     if(delta_O < 0):
         print(delta_O)
     if(action_key == 'eth_sold'):
