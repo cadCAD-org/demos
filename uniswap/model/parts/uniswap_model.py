@@ -1,7 +1,5 @@
 from .policy_aux import *
-from .UNI_aux import *
-from .DAI_aux import *
-from .ETH_aux import *
+from .suf_aux import *
 
 # Policy
 
