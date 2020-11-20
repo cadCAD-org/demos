@@ -1,4 +1,4 @@
-from .policy_aux import get_input_price
+from .policy_aux import get_output_amount
 
 
 # DAI functions
@@ -27,7 +27,7 @@ def ethToToken_DAI(_params, substep, sH, s, _input):
     if delta_I == 0:
         return ('DAI_balance', O_t)
     else:
-        delta_O = int(get_input_price(delta_I, I_t, O_t, _params))
+        delta_O = int(get_output_amount(delta_I, I_t, O_t, _params))
         return ('DAI_balance', O_t - delta_O)
 
 
@@ -64,7 +64,7 @@ def tokenToEth_ETH(_params, substep, sH, s, _input):
     if delta_I == 0:
         return ('ETH_balance', O_t)
     else:
-        delta_O = int(get_input_price(delta_I, I_t, O_t, _params))
+        delta_O = int(get_output_amount(delta_I, I_t, O_t, _params))
         return ('ETH_balance', O_t - delta_O)
     
 

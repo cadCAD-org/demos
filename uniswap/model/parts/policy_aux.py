@@ -28,7 +28,7 @@ def reverse_event(event):
         new_event = 'TokenPurchase'
     return new_event
 
-def get_input_price(delta_I, I_t, O_t, _params):
+def get_output_amount(delta_I, I_t, O_t, _params):
     fee_numerator = _params['fee_numerator']
     fee_denominator = _params['fee_denominator']
     delta_I_with_fee = delta_I * fee_numerator

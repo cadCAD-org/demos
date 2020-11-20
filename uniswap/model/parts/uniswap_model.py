@@ -19,8 +19,9 @@ def p_actionDecoder(_params, substep, sH, s):
         'eth_deposit': 0,
         'UNI_burn': 0, 
         'UNI_pct': 0,
-        'fee': _params['fee_numerator'],
-        'conv_tol': _params['conv_tolerance'],
+        'fee': 0,
+        'conv_tol': 0,
+        'price_ratio': 0
     }
 
     #Event variables
@@ -32,11 +33,12 @@ def p_actionDecoder(_params, substep, sH, s):
         if _params['c_rule'] == -1:
             action[action_key] = delta_I
         elif classifier(delta_I, delta_O, _params['c_rule']) == "Conv":            #Convenience trader case
-            calculated_delta_O = int(get_input_price(delta_I, I_t, O_t, _params))
+            calculated_delta_O = int(get_output_amount(delta_I, I_t, O_t, _params))
             if calculated_delta_O >= delta_O * (1-_params['conv_tolerance']):
                 action[action_key] = delta_I
             else:
                 action[action_key] = 0
+            action['price_ratio'] =  delta_O / calculated_delta_O
         else:            #Arbitrary trader case
             P = I_t1 / O_t1
             actual_P = I_t / O_t
@@ -44,6 +46,7 @@ def p_actionDecoder(_params, substep, sH, s):
                 I_t, O_t, I_t1, O_t1, delta_I, delta_O, action_key = get_parameters(uniswap_events, reverse_event(event), s, t)
             delta_I = get_delta_I(P, I_t, O_t, _params)
             action[action_key] = delta_I
+            action['price_ratio'] = P/((I_t + delta_I)/(O_t + get_output_amount(delta_I, I_t, O_t, _params)))
     elif event == 'AddLiquidity':
         delta_I = uniswap_events['eth_delta'][t]
         action['eth_deposit'] = delta_I
@@ -90,8 +93,5 @@ def s_mechanismHub_UNI(_params, substep, sH, s, _input):
         return removeLiquidity_UNI(_params, substep, sH, s, _input)
     return('UNI_supply', s['UNI_supply'])
 
-def s_fee(_params, substep, sH, s, _input):
-    return('fee',_input['fee'])
-
-def s_conv_tol(_params, substep, sH, s, _input):
-    return('conv_tol',_input['conv_tol'])
+def s_price_ratio(_params, substep, sH, s, _input):
+    return('price_ratio',_input['price_ratio'])
