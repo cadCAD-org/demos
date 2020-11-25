@@ -44,9 +44,19 @@ def p_actionDecoder(_params, substep, sH, s):
             actual_P = I_t / O_t
             if(actual_P > P):
                 I_t, O_t, I_t1, O_t1, delta_I, delta_O, action_key = get_parameters(uniswap_events, reverse_event(event), s, t)
-            delta_I = get_delta_I(P, I_t, O_t, _params)
-            action[action_key] = delta_I
-            action['price_ratio'] = P/((I_t + delta_I)/(O_t + get_output_amount(delta_I, I_t, O_t, _params)))
+                P = I_t1 / O_t1
+                actual_P = I_t / O_t
+                delta_I = get_delta_I(P, I_t, O_t, _params[0])
+                delta_O = get_input_price(delta_I, I_t, O_t, _params[0])
+                if(unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, uniswap_events['convert_ETH_rate'][t], _params[0])):
+                    delta_I = 0
+                action[action_key] = delta_I
+            else:
+                delta_I = get_delta_I(P, I_t, O_t, _params[0])
+                delta_O = get_input_price(delta_I, I_t, O_t, _params[0])
+                if(unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, uniswap_events['convert_ETH_rate'][t], _params[0])):
+                    delta_I = 0
+                action[action_key] = delta_I
     elif event == 'AddLiquidity':
         delta_I = uniswap_events['eth_delta'][t]
         action['eth_deposit'] = delta_I
@@ -58,6 +68,15 @@ def p_actionDecoder(_params, substep, sH, s):
             action['UNI_pct'] = -UNI_delta / UNI_supply
     del uniswap_events
     return action
+
+def profitable(P, delta_I, delta_O, action_key, _params):
+    gross_profit = (delta_O*P) - delta_I
+    if(action_key == 'token'):
+        convert_to_ETH = gross_profit/P
+        is_profitable = (convert_to_ETH > _params[0]['fix_cost'])
+    else:
+        is_profitable = (gross_profit > _params[0]['fix_cost'])
+
 
 # SUFs
 
