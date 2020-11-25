@@ -35,6 +35,13 @@ def get_input_price(delta_I, I_t, O_t, _params):
     denominator = (I_t * fee_denominator) + delta_I_with_fee
     return int(numerator // denominator)
 
+def get_output_price(delta_O, I_t, O_t, _params):
+    fee_numerator = _params['fee_numerator']
+    fee_denominator = _params['fee_denominator']
+    numerator = I_t * delta_O * fee_denominator
+    denominator = (O_t - delta_O) * fee_numerator
+    return int(numerator // denominator) + 1
+
 def classifier(delta_I, delta_O, c_rule):
     if (delta_I / (10 ** (18-c_rule))).is_integer() or (delta_O / (10 ** (18-c_rule))).is_integer() :
       return "Conv"
@@ -52,32 +59,15 @@ def get_delta_I(P, I_t, O_t, _params):
 
     return int(delta_I)
 
-def unprofitable_transaction(t, type_of, P, actual_P, delta_I, delta_O, action_key, convert_rate, _params):
-    fix_cost = int((_params[0]['fix_cost']/convert_rate)*(10**18))
-    if(delta_O < 0):
-        print(delta_O)
-    if(action_key == 'eth_sold'):
-        profit = delta_O*P - (delta_I)
-        # if(t<50):
-            # print(action_key)
-            # print("is inverted:     ", type_of)
-            # print("actual_P: ", actual_P)
-            # print("P       : ", P)
-            # print("delta_I    (ETH): ", delta_I)
-            # print("delta_O*P  (ETH): ", int(delta_O*P))
-            # print("abs_profit (ETH): ", profit)
-            # print("fix_cost   (ETH): ", fix_cost)
-            # print("abs_profit (USD): ", (profit/(10**18))*convert_rate)
+def unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, convert_rate, _params):
+    fix_cost = int((_params['fix_cost']/convert_rate)*(10**18))
+    if(fix_cost != -1):
+      if(action_key == 'eth_sold'): # TokenPurchase
+          after_P = 1 / get_input_price(1, I_t, O_t, _params)
+          profit = int(abs(delta_O*after_P) - (delta_I))
+      else: # EthPurchase
+          after_P = get_output_price(1, I_t, O_t, _params)
+          profit = int(abs(delta_O) - int(delta_I/after_P))
+      return (profit < fix_cost)
     else:
-        profit = delta_O - int(delta_I/P)
-        # if(t<50):
-            # print(action_key)
-            # print("is inverted:     ", type_of)
-            # print("actual_P: ", actual_P)
-            # print("P       : ", P)
-            # print("delta_I/P  (ETH): ", int(delta_I/P))
-            # print("delta_O    (ETH): ", delta_O)
-            # print("abs_profit (ETH): ", profit)
-            # print("fix_cost   (ETH): ", fix_cost)
-            # print("abs_profit (USD): ", (profit/(10**18))*convert_rate)
-    return (profit < fix_cost)
+      return False
