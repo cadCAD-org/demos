@@ -22,7 +22,7 @@ if __name__ == "__main__":
     if(not args.key):
         print("Please insert your Nomics API key with the --key argument.")
     else:
-        df  = pd.read_pickle('./uniswap_events.pickle')
+        df  = pd.read_pickle('../uniswap_events.pickle')
         try:
             df.drop(columns=['convert_ETH_rate', 'convert_DAI_rate'], inplace=True)
         except:
@@ -67,4 +67,4 @@ if __name__ == "__main__":
     df = df.set_index('block_date').join(dai_rate_df.set_index('date')).reset_index(drop=True)
     df['convert_ETH_rate'] = df['convert_ETH_rate'].astype(float)
     df['convert_DAI_rate'] = df['convert_DAI_rate'].astype(float)
-    df.to_pickle('./uniswap_events.pickle')
+    df.to_pickle('../uniswap_events.pickle')
