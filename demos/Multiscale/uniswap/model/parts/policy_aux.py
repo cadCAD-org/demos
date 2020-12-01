@@ -43,8 +43,8 @@ def get_input_amount(delta_O, I_t, O_t, _params):
     denominator = (O_t - delta_O) * fee_numerator
     return int(numerator // denominator) + 1
 
-def classifier(delta_I, delta_O, c_rule):
-    if (delta_I / (10 ** (18-c_rule))).is_integer() or (delta_O / (10 ** (18-c_rule))).is_integer() :
+def classifier(delta_I, delta_O, retail_precision):
+    if (delta_I / (10 ** (18-retail_precision))).is_integer() or (delta_O / (10 ** (18-retail_precision))).is_integer() :
       return "Conv"
     else:
       return "Arb"
