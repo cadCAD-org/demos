@@ -12,3 +12,4 @@ Can be useful for debugging
 * execution_time_decorator.ipynb - Putting decorators for debugging the logic
 execution time
 * psub_metadata.ipynb - How to use PSUB metadata for pre-processing
+* snippet.ipynb - Generate diagrams for illustrating a model logic and structure
