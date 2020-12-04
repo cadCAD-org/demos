@@ -4,8 +4,12 @@ import requests
 import pandas as pd
 import datetime as dt
 
+def convert_to_rfc(block_timestamp):
+    date = block_timestamp.date().isoformat()+"T00%3A00%3A00Z"
+    return date 
+
 def get_convert_rate(API_key):
-  df  = pd.read_pickle('../uniswap_events.pickle')
+  df  = pd.read_pickle('./data/uniswap_events.pickle')
   try:
       df.drop(columns=['convert_ETH_rate', 'convert_DAI_rate'], inplace=True)
   except:
@@ -15,7 +19,6 @@ def get_convert_rate(API_key):
   end = df.iloc[-1].block_date
   coin="ETH"
   api_request = f"https://api.nomics.com/v1/exchange-rates/history?key={API_key}&currency={coin}&start={start}&end={end}&format=csv"
-
   with requests.Session() as s:
       download = s.get(api_request)
 
@@ -28,7 +31,7 @@ def get_convert_rate(API_key):
 
   print(start, end)
   coin="DAI"
-  api_request = f"https://api.nomics.com/v1/exchange-rates/history?key={args.key}&currency={coin}&start={start}&end={end}&format=csv"
+  api_request = f"https://api.nomics.com/v1/exchange-rates/history?key={API_key}&currency={coin}&start={start}&end={end}&format=csv"
 
   with requests.Session() as s:
       download = s.get(api_request)
@@ -50,4 +53,4 @@ def get_convert_rate(API_key):
   df = df.set_index('block_date').join(dai_rate_df.set_index('date')).reset_index(drop=True)
   df['convert_ETH_rate'] = df['convert_ETH_rate'].astype(float)
   df['convert_DAI_rate'] = df['convert_DAI_rate'].astype(float)
-  df.to_pickle('../uniswap_events.pickle')
+  df.to_pickle('./data/uniswap_events.pickle')

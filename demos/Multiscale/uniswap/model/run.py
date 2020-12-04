@@ -2,14 +2,14 @@ import pandas as pd
 from model import config
 from cadCAD.engine import ExecutionMode, ExecutionContext, Executor
 from cadCAD import configs
-from data.utils import get_convert_rate
+from data.utils.get_convert_rate import get_convert_rate
 
 def run(API_key: str, drop_midsteps: bool=True) -> pd.DataFrame:
     """
     Run all experiments and return their output on the dataset column.
     Each line represents an iteration of the parameter-sweep combinations.
     """
-
+    get_convert_rate(API_key)
     exec_mode = ExecutionMode()
     local_proc_ctx = ExecutionContext(context=exec_mode.multi_mode)
     simulation = Executor(exec_context=local_proc_ctx, configs=configs)
