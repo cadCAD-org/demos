@@ -6,8 +6,8 @@ sys_params = {
     'fee_denominator': [1000],
     'uniswap_events': [pd.read_pickle('./data/uniswap_events.pickle')],
     'fix_cost': [-1], # -1 to deactivate
-    'c_rule': [3,3,15,15,
+    'retail_precision': [3,3,15,15,
                 3,3,15,15],
-    'conv_tolerance': [0.0005, 0.025, 0.0005, 0.025,
+    'retail_tolerance': [0.0005, 0.025, 0.0005, 0.025,
                         0.0005, 0.025, 0.0005, 0.025]
 }

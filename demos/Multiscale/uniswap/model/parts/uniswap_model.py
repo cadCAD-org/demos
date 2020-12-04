@@ -30,11 +30,11 @@ def p_actionDecoder(_params, substep, sH, s):
 
     if event in ['TokenPurchase', 'EthPurchase']:
         I_t, O_t, I_t1, O_t1, delta_I, delta_O, action_key = get_parameters(uniswap_events, event, s, t)
-        if _params['c_rule'] == -1:
+        if _params['retail_precision'] == -1:
             action[action_key] = delta_I
-        elif classifier(delta_I, delta_O, _params['c_rule']) == "Conv":            #Convenience trader case
+        elif classifier(delta_I, delta_O, _params['retail_precision']) == "Conv":            #Convenience trader case
             calculated_delta_O = int(get_output_amount(delta_I, I_t, O_t, _params))
-            if calculated_delta_O >= delta_O * (1-_params['conv_tolerance']):
+            if calculated_delta_O >= delta_O * (1-_params['retail_tolerance']):
                 action[action_key] = delta_I
             else:
                 action[action_key] = 0
