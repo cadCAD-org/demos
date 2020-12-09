@@ -48,13 +48,13 @@ def p_actionDecoder(_params, substep, sH, s):
                 actual_P = I_t / O_t
                 delta_I = get_delta_I(P, I_t, O_t, _params)
                 delta_O = get_output_amount(delta_I, I_t, O_t, _params)
-                if(unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, uniswap_events['convert_ETH_rate'][t], _params)):
+                if(unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, _params)):
                     delta_I = 0
                 action[action_key] = delta_I
             else:
                 delta_I = get_delta_I(P, I_t, O_t, _params)
                 delta_O = get_output_amount(delta_I, I_t, O_t, _params)
-                if(unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, uniswap_events['convert_ETH_rate'][t], _params)):
+                if(unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, _params)):
                     delta_I = 0
                 action[action_key] = delta_I
     elif event == 'AddLiquidity':

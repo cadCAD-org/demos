@@ -60,8 +60,8 @@ def get_delta_I(P, I_t, O_t, _params):
 
     return int(delta_I)
 
-def unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, convert_rate, _params):
-    fix_cost = int((_params['fix_cost']/convert_rate)*(10**18))
+def unprofitable_transaction(I_t, O_t, delta_I, delta_O, action_key, _params):
+    fix_cost = _params['fix_cost']
     if(fix_cost != -1):
       if(action_key == 'eth_sold'): # TokenPurchase
           after_P = 1 / get_output_amount(1, I_t, O_t, _params)
