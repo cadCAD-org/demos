@@ -12,4 +12,5 @@ Can be useful for debugging
 * execution_time_decorator.ipynb - Putting decorators for debugging the logic
 execution time
 * psub_metadata.ipynb - How to use PSUB metadata for pre-processing
+* psub_map_label.ipynb - Referencing Partial State Update Blocks labels to substeps in cadCAD
 * diagram.ipynb - Generate diagrams for illustrating a model logic and structure
