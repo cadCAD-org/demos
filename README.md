@@ -10,7 +10,7 @@ The way to think of cadCAD modeling is analogous to machine learning pipelines w
 
 The flexibility of cadCAD also enables the embedding of machine learning models into behavior policies or mechanisms for complex systems with an machine learning prediction component. 
 
-In this repository are a series of demos, tutorials and snippets how to use cadCAD. Tutorials example how to use cadCAD while demos show examples of cadCAD in use. Snippets are tiny pieces of code that shows a specific feature or trick while using cadCAD.
+In this repository are a series of demos and tutorials for how to use cadCAD. Tutorials example how to use cadCAD while demos show examples of cadCAD in use. 
 
 ## Tutorials
 
