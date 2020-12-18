@@ -48,7 +48,6 @@ In this series, we introduce mathematical concepts and how to use cadCAD for num
 ### Extra credit:
 * [Zero-Order and First-Order Optimization Algorithms](http://web.stanford.edu/class/msande311/lecture10.pdf)
 
-
 ## Demos
 
 We will look at demos that use different types of modeling, to give the reader and understanding of the various tools available to modelers.
@@ -101,6 +100,22 @@ partial_state_update_block = [
 ![](https://i.imgur.com/caK3SWK.png)
 
 *Demo:* See the [model here.](demos/System_Dynamics/prey_predator_sd/Predator_Prey_SD_model.ipynb)
+
+#### Compartment Models
+In order to create a mathematical representation of an infectious disease, we will use compartmental models.
+
+The simplest compartmental model is SIR, which consists of three compartments:
+
+* Susceptible: The number of individuals at risk of contracting the disease;
+* Infectious: The number of individuals who have been infected and are capable of infecting susceptible individuals;
+* Recovered: The number of individuals who have been infected and have recovered from the disease.
+As SIR is a very simple model, it considers that the disease's death rate is negligible.
+
+The SIR model can give us a decent analysis on the behavior of an infectious disease, but its simplicity limitates it. Many infections have a significant incubation period during which individuals have been infected but neither show symptoms nor are capable of infecting other individuals. Because of that, the SEIR model can represent them in a better way.
+
+As we know, some diseases also have a significant death rate, such as measles, Ebola and SARS. Because of that, SIR and SEIR models can be considerably inaccurate when representing them. Therefore, the SEIRD model can better do it, as it includes individuals who died because of the disease in compartment D.
+
+*Demo:* To see all three models, [click here.](demos/System_Dynamics/Compartment_Models/lab_notebook.ipynb)
 
 ##### System Dynamics paradigm (macroscopic view) advantages
 
@@ -312,6 +327,23 @@ In our [cadCAD model](demos/Multiscale/uniswap/Uniswap_Model.ipynb), we have ill
 
 #### Bonding Curve
 *Demo*. In this [notebook](demos/Multiscale/bonding_curve/Bonding_Curve.ipynb), we have shared the experimental code used by Dr. Zargham's [Economic Games as Estimators](https://epub.wu.ac.at/7433/) paper. We have illustrated how to use different driving processes for running numerical simulations.
+
+#### Bonding Curve
+*Demo*. In this [notebook](demos/Multiscale/bonding_curve/Bonding_Curve.ipynb), we have shared the experimental code used by Dr. Zargham's [Economic Games as Estimators](https://epub.wu.ac.at/7433/) paper. We have illustrated how to use different driving processes for running numerical simulations.
+
+#### Three Sided Model
+The design requirement that underpins the three-sided market archetype is that it supports ‘Community-Corporation Substitutability’. That is to say that a community coordinating through technology such as decentralized ledgers can functionally fulfill a role in the economy that is currently fulfilled by a corporation without the users of that corporate product knowing or caring that the provider is a community.
+
+In particular, the ‘Three-Sided Market’ archetype is for platform business where the product being produced enables transactions between a service provider and service consumer. The reference example for this case is a ride sharing app such as Uber. In this case drivers would be providers and riders would be consumers. The corporation Uber is the producer, and in our three-sided-market that role will be spread to a decentralized community collectively providing all of the functions required for users (providers and consumers) to have an equivalent user experience.
+
+The design challenge posed is that of crafting economic mechanisms and policies that ensure that community is able to thrive; like a corporation it must remain financially solvent, but unlike a corporation there need not be expectations of forced growth or outsized profits. Without a need to extract rent to meet corporate goals, the dynamic resource allocation problem required to maintain a healthy economy is while challenging, fundamentally more tractable than a quest for ever growing profits.
+
+To see the notebook, [click here](demos/Multiscale/ThreeSided/ThreeSidedMarket.ipynb)
+
+#### Basic Three Sided Model
+The ‘Three-Sided Market’ model is for platform business where the product being produced enables transactions between a service provider and service consumer. The reference example for this case is a ride sharing app such as Uber. In this case drivers would be providers and riders would be consumers. The corporation Uber is the producer, and in our three-sided-market that role will be spread to a decentralized community collectively providing all of the functions required for users (providers and consumers) to have an equivalent user experience. 
+
+To see the notebook, [click here](demos/Multiscale/ThreeSidedBasic/BasicThreeSidedMarketModel.ipynb)
 
 #### Multiscale Modeling Advantages
 * Ability on multiple spatio-temporal scales.
