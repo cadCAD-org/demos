@@ -332,18 +332,10 @@ In our [cadCAD model](demos/Multiscale/uniswap/Uniswap_Model.ipynb), we have ill
 *Demo*. In this [notebook](demos/Multiscale/bonding_curve/Bonding_Curve.ipynb), we have shared the experimental code used by Dr. Zargham's [Economic Games as Estimators](https://epub.wu.ac.at/7433/) paper. We have illustrated how to use different driving processes for running numerical simulations.
 
 #### Three Sided Model
-The design requirement that underpins the three-sided market archetype is that it supports ‘Community-Corporation Substitutability’. That is to say that a community coordinating through technology such as decentralized ledgers can functionally fulfill a role in the economy that is currently fulfilled by a corporation without the users of that corporate product knowing or caring that the provider is a community.
-
-In particular, the ‘Three-Sided Market’ archetype is for platform business where the product being produced enables transactions between a service provider and service consumer. The reference example for this case is a ride sharing app such as Uber. In this case drivers would be providers and riders would be consumers. The corporation Uber is the producer, and in our three-sided-market that role will be spread to a decentralized community collectively providing all of the functions required for users (providers and consumers) to have an equivalent user experience.
-
-The design challenge posed is that of crafting economic mechanisms and policies that ensure that community is able to thrive; like a corporation it must remain financially solvent, but unlike a corporation there need not be expectations of forced growth or outsized profits. Without a need to extract rent to meet corporate goals, the dynamic resource allocation problem required to maintain a healthy economy is while challenging, fundamentally more tractable than a quest for ever growing profits.
-
-To see the notebook, [click here](demos/Multiscale/ThreeSided/ThreeSidedMarket.ipynb)
+*Demo*. In this [notebook](demos/Multiscale/ThreeSided/ThreeSidedMarket.ipynb), we propose the ‘Three-Sided Market’ archetype for platform business where the product being produced enables transactions between a service provider and service consumer. The reference example for this case is a ride sharing app such as Uber. In this case drivers would be providers and riders would be consumers. The corporation Uber is the producer, and in our three-sided-market that role will be spread to a decentralized community collectively providing all of the functions required for users (providers and consumers) to have an equivalent user experience.
 
 #### Basic Three Sided Model
-The ‘Three-Sided Market’ model is for platform business where the product being produced enables transactions between a service provider and service consumer. The reference example for this case is a ride sharing app such as Uber. In this case drivers would be providers and riders would be consumers. The corporation Uber is the producer, and in our three-sided-market that role will be spread to a decentralized community collectively providing all of the functions required for users (providers and consumers) to have an equivalent user experience. 
-
-To see the notebook, [click here](demos/Multiscale/ThreeSidedBasic/BasicThreeSidedMarketModel.ipynb)
+*Demo*. This [notebook](demos/Multiscale/ThreeSidedBasic/BasicThreeSidedMarketModel.ipynb) is a scaled down, basic version of the Three Sided Market Model illustrated previously.
 
 #### Multiscale Modeling Advantages
 * Ability on multiple spatio-temporal scales.
