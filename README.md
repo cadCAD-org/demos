@@ -25,7 +25,7 @@ In this series, we introduce basic concepts of cadCAD and system modelling in ge
 [Part 6](tutorials/robots_and_marbles/robot-marbles-part-6/robot-marbles-part-6.ipynb) - A/B testing  
 [Part 7](tutorials/robots_and_marbles/robot-marbles-part-7/robot-marbles-part-7.ipynb) - Parameter Sweeping  
 
-Check out the [videos](tutorials/videos) folder for detailed walkthroughs of each one of the tutorials.
+Check out the [videos](tutorials/robots_and_marbles/videos) folder for detailed walkthroughs of each one of the tutorials.
 
 
 **Numerical Computation Series**
