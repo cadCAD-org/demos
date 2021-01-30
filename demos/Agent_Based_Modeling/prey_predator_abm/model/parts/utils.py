@@ -48,6 +48,7 @@ def calculate_increment(value: float,
     new_value = (value_candidate
                  if value_candidate < max_value
                  else max_value)
+
     return new_value
 
 # Location heper
