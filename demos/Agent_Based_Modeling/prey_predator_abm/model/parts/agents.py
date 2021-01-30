@@ -66,8 +66,15 @@ def reproduce_agents(params, substep, state_history, prev_state):
                                         'location': reproduction_location,
                                         'food': 2.0 * reproduction_food,
                                         'age': 0}
-                new_agents[uuid4()] = new_agent_properties
-                busy_locations.append(reproduction_location)
+
+                # Agents have 50% prob of reproducing
+                to_reproduce = np.random.rand() < 0.5
+
+                if to_reproduce:     
+                    new_agents[uuid4()] = new_agent_properties
+                    busy_locations.append(reproduction_location)
+                else:
+                    continue
     return {'agent_delta_food': agent_delta_food,'agent_create': new_agents}
 
 def feed_prey(params, substep, state_history, prev_state):

@@ -2,6 +2,8 @@ from .parts.environment import *
 from .parts.agents import *
 
 partial_state_update_block = [
+    # Generate disaster events
+    # {policie, variables}
     {
         # environment.py
         'policies': {
