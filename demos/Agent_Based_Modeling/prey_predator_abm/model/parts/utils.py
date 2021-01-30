@@ -32,11 +32,21 @@ def generate_agents(N: int,M: int,initial_sites: int,
     return initial_agents
 
 
+def year_to_intensity(t: int) -> float:
+    return (np.sin(t * (2 * np.pi) / 10) + 1) / 2
+
+
 # Environment
 @np.vectorize
-def calculate_increment(value, growth_rate, max_value):
-    new_value = (value + growth_rate
-                 if value + growth_rate < max_value
+def calculate_increment(value: float,
+                        growth_rate: float,
+                        max_value: float,
+                        t: int):
+    effective_growth_rate = growth_rate * year_to_intensity(t)
+    value_candidate = value + effective_growth_rate
+    
+    new_value = (value_candidate
+                 if value_candidate < max_value
                  else max_value)
     return new_value
 
