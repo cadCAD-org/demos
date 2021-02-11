@@ -3,7 +3,7 @@ from model import config
 from cadCAD.engine import ExecutionMode, ExecutionContext, Executor
 from cadCAD import configs
 
-def run(API_key: str, drop_midsteps: bool=True) -> pd.DataFrame:
+def run(drop_midsteps: bool=True) -> pd.DataFrame:
     """
     Run all experiments and return their output on the dataset column.
     Each line represents an iteration of the parameter-sweep combinations.
