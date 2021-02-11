@@ -1,3 +1,2 @@
-# Uniswap Model
-## cadCAD Specification
-![cadCAD Spec](images/cadcadspec_uniswap_demos.png)
+# Uniswap @ cadCAD
+Uniswap [cadCAD](http://cadcad.org) models and data analyses
