@@ -1,13 +1,8 @@
-# Dependences
-from .parts.utils import *
-from .sys_params import initial_values
+import pandas as pd
 
-
-## Initial state object
 genesis_states = {
-    'DAI_balance': initial_values['DAI_balance'],
-    'ETH_balance': initial_values['ETH_balance'],
-    'UNI_supply': initial_values['UNI_supply']
+    'DAI_balance': 5900000000000000000000,
+    'ETH_balance': 30000000000000000000,
+    'UNI_supply': 30000000000000000000,
+    'price_ratio': 0
 }
-
-
