@@ -21,4 +21,8 @@ sys_params = {
     'correction_wt': [0.5],
     'noise_wt': [0.001],
     'TOK':[initial_values['TOK']],
+    'fixed_price': [4],
+    'leakage': [.1/(60*60), .1/(60*60), 0, 0],
+    'Kp':[10e-7],
+    'Ki':[-10e-9/(60*60), 10e-9/(60*60), -10e-9/(60*60), 10e-9/(60*60)]
 }

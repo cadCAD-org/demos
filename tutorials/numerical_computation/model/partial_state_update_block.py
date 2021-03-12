@@ -3,28 +3,38 @@ from .parts.system import *
 partial_state_update_block = [
     {
         # system.py
-        'policies': {
+        'policies': 
+            {
             'update_event': event
-        },
-        'variables': {
-            'error': store_error,
+            },
+        'variables': 
+            {
             'timestamp':time_move,
             'Dt': store_Dt
-        }
+            }
     },
     {
-        'policies': {
-        },
-        'variables': {
-            'integral': update_integral,
-        }
+        # system.py
+        'policies': 
+            {
+            'target_price': resolve_target_price,
+            'market_price': constant
+            },
+        'variables': 
+            {
+            'price':store_market_price,
+            'target': store_target_price,
+            'error': store_error,
+            'integral': update_leaky_integral,
+            }
     },
     {
-        'policies': {
-            'martingale': martingale        
-        },
-        'variables': {
-            'price': price_move,
-        }
-    },
+        'policies':
+            {
+            },
+        'variables':
+            {
+            'price_adjustment_rate': store_control_action
+            }   
+    }
 ]
