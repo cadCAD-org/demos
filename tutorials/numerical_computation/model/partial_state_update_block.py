@@ -18,7 +18,7 @@ partial_state_update_block = [
         'policies': 
             {
             'target_price': resolve_target_price,
-            'market_price': constant
+            'market_price': martingale
             },
         'variables': 
             {

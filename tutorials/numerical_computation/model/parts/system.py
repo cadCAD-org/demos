@@ -28,8 +28,8 @@ def martingale(params, step, sL, s):
 
     theta = params['correction_wt']
     noise = np.random.randn()*params['noise_wt']
-    raw_price = float(s['price'])/params['TOK']
-    raw_target = float(s['target'])/params['TOK']
+    raw_price = float(s['price'])#/params['TOK']
+    raw_target = float(s['target'])#/params['TOK']
 
     raw_price = theta*raw_target+(1-theta)*raw_price + noise
     
