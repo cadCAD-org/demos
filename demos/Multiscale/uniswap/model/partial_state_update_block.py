@@ -1,15 +1,16 @@
-from .parts.system import *
+from .parts.uniswap_model import *
 
-partial_state_update_block = [
+PSUBs = [
     {
-        # system.py
         'policies': {
-            'user_action': actionDecoder
+            'user_action': p_actionDecoder
         },
         'variables': {
-            'DAI_balance': mechanismHub_DAI,
-            'ETH_balance': mechanismHub_ETH,
-            'UNI_supply': mechanismHub_UNI
+            'DAI_balance': s_mechanismHub_DAI,
+            'ETH_balance': s_mechanismHub_ETH,
+            'UNI_supply': s_mechanismHub_UNI,
+            'price_ratio': s_price_ratio
         }
     }
+
 ]
