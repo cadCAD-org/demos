@@ -16,7 +16,10 @@ def addLiquidity_DAI(_params, substep, sH, s, _input):
 def removeLiquidity_DAI(_params, substep, sH, s, _input):
     token_reserve = int(s['DAI_balance'])
     pct_amount = _input['UNI_pct']
-    amount = token_reserve * pct_amount
+    if pct_amount > 1:
+        amount = 0
+    else:
+        amount = token_reserve * pct_amount
     return ('DAI_balance', int(token_reserve - amount))
 
 
@@ -47,7 +50,10 @@ def addLiquidity_ETH(_params, substep, sH, s, _input):
 def removeLiquidity_ETH(_params, substep, sH, s, _input):
     eth_reserve = int(s['ETH_balance'])
     pct_amount = _input['UNI_pct']
-    amount = pct_amount * eth_reserve
+    if pct_amount > 1:
+        amount = 0
+    else:
+        amount = pct_amount * eth_reserve
     return ('ETH_balance', int(eth_reserve - amount))
 
 
@@ -80,5 +86,8 @@ def addLiquidity_UNI(_params, substep, sH, s, _input):
 def removeLiquidity_UNI(_params, substep, sH, s, _input):
     total_liquidity = int(s['UNI_supply'])
     pct_amount = _input['UNI_pct']
-    amount = total_liquidity * pct_amount
+    if pct_amount > 1:
+        amount = 0
+    else:
+        amount = total_liquidity * pct_amount
     return ('UNI_supply', int(total_liquidity - amount))
