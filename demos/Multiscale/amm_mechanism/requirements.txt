@@ -1,0 +1,12 @@
+  
+pandas>=0.25.3
+numpy>=1.19.2
+cadCAD==0.4.23
+plotly>=4.8.2
+matplotlib>=3.3.3
+jupyterlab>=2.2.6
+seaborn>=0.11.1
+scipy>=1.5.4
+ipywidgets>=7.5.1
+jupyter>=1.0.0
+pathos
