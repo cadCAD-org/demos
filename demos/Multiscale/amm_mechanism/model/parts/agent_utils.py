@@ -120,7 +120,7 @@ def agent_r_to_q_trade(params, substep, state_history, prev_state, policy_input)
     q_bought = int(getInputPrice(ri, Ri, Q, params))
         # return ('UNI_Q' + asset_id, Q - q_bought)
 
-    print(q_bought)
+    # print(q_bought)
     U_agents.at[agent_id,'h'] = chosen_agent['h'].values + q_bought
 
     U_agents.at[agent_id,'r_' + asset_id + '_out'] = chosen_agent['r_' + asset_id + '_out'].values - ri
@@ -129,7 +129,7 @@ def agent_r_to_q_trade(params, substep, state_history, prev_state, policy_input)
 
 def agent_r_to_r_swap(params, substep, state_history, prev_state, policy_input):
     """
-    This function updates agent states when a swap is performed between two risk assets
+    This function updates agent states when a swap is performed between two assets
     """
     asset_id = policy_input['asset_id'] # defines asset subscript
     purchased_asset_id = policy_input['purchased_asset_id'] # defines asset subscript

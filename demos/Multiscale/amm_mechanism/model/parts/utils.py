@@ -144,7 +144,7 @@ def r_to_q_Ri(params, substep, state_history, prev_state, policy_input):
 
 def r_to_r_in(params, substep, state_history, prev_state, policy_input):
     """
-    For a 'r to r' trade between two risk assets this function returns the amount of token UNI_Rx for the respective asset depending on the policy_input
+    For a 'r to r' trade between two assets this function returns the amount of token UNI_Rx for the respective asset depending on the policy_input
     """
     asset_id = policy_input['asset_id'] # defines asset subscript
     purchased_asset_id = policy_input['purchased_asset_id'] # defines asset subscript
@@ -165,7 +165,7 @@ def r_to_r_in(params, substep, state_history, prev_state, policy_input):
     
 def r_to_r_out(params, substep, state_history, prev_state, policy_input):
     """
-    For a 'r to r' trade between two risk assets this function returns the amount of token UNI_Rx for the respective asset depending on the policy_input
+    For a 'r to r' trade between two assets this function returns the amount of token UNI_Rx for the respective asset depending on the policy_input
     """
     asset_id = policy_input['asset_id'] # defines asset subscript
     purchased_asset_id = policy_input['purchased_asset_id'] # defines asset subscript

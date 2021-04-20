@@ -118,8 +118,8 @@ def actionDecoder(params, step, history, prev_state):
             params['exo_trade'] = ACTION_LIST[4] # automate this
             params['exo_liq'] = ACTION_LIST[4]
             action['asset_id'] = 'i'
-            print('---------------------------------------------------')
-            print('timestep', timestep)
+            # print('---------------------------------------------------')
+            # print('timestep', timestep)
     else:
         list_index = timestep % 3 + 1
         params['exo_trade'] = ACTION_LIST[list_index]
