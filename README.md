@@ -1,8 +1,15 @@
 # Tutorials and demos
+
 This repo contains tutorials and demos for learning how to use cadCAD. 
 
 ## cadCAD System in "Plain English" 
-In the cadCAD simulation [methodology](https://community.cadcad.org/t/differential-specification-syntax-key/31), we operate on four layers: **Policies, Mechanisms, States**, and **Metrics**. Information flows do not have explicit feedback loop unless noted. **Policies** determine the inputs into the system dynamics, and can come from user input, observations from the exogenous environment, or algorithms. **Mechanisms** are functions that take the policy decisions and update the States to reflect the policy level changes. **States** are variables that represent the system quantities at the given point in time, and **Metrics** are computed from state variables to assess the health of the system. Metrics can often be thought of as KPIs, or Key Performance Indicators. 
+
+In the cadCAD simulation [methodology](https://community.cadcad.org/t/differential-specification-syntax-key/31), we operate on four layers: **Policies, Mechanisms, States**, and **Metrics**.
+
+- **Policies** determine the inputs into the system dynamics, and can come from user input, observations from the exogenous environment, or algorithms.
+- **Mechanisms** are functions that take the policy decisions and update the States to reflect the policy level changes.
+- **States** are variables that represent the system quantities at the given point in time.
+- **Metrics** are computed from state variables to assess the health of the system. Metrics can often be thought of as KPIs, or Key Performance Indicators. 
 
 At a more granular level, to setup a model, there are system conventions and configurations that must be [followed.](https://community.cadcad.org/t/introduction-to-simulation-configurations/34)
 
