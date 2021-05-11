@@ -27,6 +27,8 @@ def actionDecoder(params, step, history, prev_state):
     trade_size = np.random.normal(trade_mean, trade_sd)
 
     action['asset_id'] = np.random.choice(['i', 'j'])
+
+    # action['asset_id'] = np.random.choice(['i'])
     timestep = prev_state['timestep']
 
     ############ CHOOSE ASSET TYPE #############################
@@ -121,8 +123,8 @@ def actionDecoder(params, step, history, prev_state):
             params['exo_liq'] = ACTION_LIST[0]
             action['asset_id'] = 'i'
     elif timestep == 990:
-            params['exo_trade'] = ACTION_LIST[4] # automate this
-            params['exo_liq'] = ACTION_LIST[4]
+            params['exo_trade'] = ACTION_LIST[-1] # automate this
+            params['exo_liq'] = ACTION_LIST[-1]
             action['asset_id'] = 'i'
             # print('---------------------------------------------------')
             # print('timestep', timestep)

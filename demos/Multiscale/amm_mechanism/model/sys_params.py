@@ -57,6 +57,8 @@ ENABLE_SYMMETRIC_LIQ = [True]
 # ENABLE_SYMMETRIC_LIQ = [False] # False
 
 ACTION_LIST = [['test_add', 'test_r_for_q', 'test_q_for_r','test_r_for_r', 'test_remove']]
+# ACTION_LIST = [['test_add', 'test_r_for_q', 'test_q_for_r', 'test_remove']]
+
 # ACTION_LIST = [['test_add', 'test_r_for_r', 'test_remove']]
 asset_initial_values = {
     'i' : 
@@ -106,7 +108,7 @@ initial_values = {
 }
 # print(initial_values['Q'])
 #################################################################################################################
-fee_numerator = [997]
+fee_numerator = [990, 997, 1000]
 fee_denominator = [1000]
 
 ### Parameters
