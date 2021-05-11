@@ -6,7 +6,7 @@ from .sys_params import params
 
 sim_config = config_sim (
     {
-        'N': 1, # number of monte carlo runs
+        'N': 10, # number of monte carlo runs
         'T': range(1000), # number of timesteps - 147439 is the length of uniswap_events
         'M': params, # simulation parameters
     }
