@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import copy
 
 def agent_value_plot(experiments,test_title,T): #, agent_index, asset_id):
     """
@@ -189,4 +190,114 @@ Once where fees are included and once without fees.
     plt.title(test_title)
     plt.xlabel('Timestep')
     plt.ylabel('Price')
+    plt.show()
+
+def slippage_plot(experiments,test_title, T, asset_id_list):
+    """
+    Plot relative liquidity change- delta S for each asset
+    """
+    asset_S = {k:[] for k in asset_id_list}
+    df = experiments
+    df = df[df['substep'] == df.substep.max()]
+    df.fillna(0,inplace=True)
+    dR = 0
+    for asset_id in asset_S:
+        for i in range(df.substep.max(),T, df.substep.max()): 
+            S = df.pool[i].pool[asset_id]['S']
+            R = df.pool[i].pool[asset_id]['R']
+            # need to get diff here
+            # dR = R - df.pool[i].pool[asset_id]['R']
+
+            # asset_S[str(asset_id)].append(S*dR/R)
+            asset_S[str(asset_id)].append(S/R)
+
+
+
+    i_in_j = [j / i - 1 for i,j in zip(*asset_S.values())]
+
+    # print(asset_P)
+    plt.figure(figsize=(12, 8))
+    # for asset_id in asset_id_list:
+
+    #     value_df = pd.DataFrame(asset_S[asset_id])
+    #     value_df = value_df.pct_change()
+    #     value_df.iloc[0] = 0
+    #     # print(value_df)
+    #     plt.plot(value_df,label='Asset '+ asset_id, marker='o')
+    plt.plot(i_in_j,label='Slippage '+ str(asset_id_list), marker='o')
+  
+    plt.legend()
+    plt.title(test_title + ' for Asset ' + str(asset_id_list))
+    plt.xlabel('Timestep')
+    plt.ylabel('Asset Liquidity Change')
+
+    plt.show()
+
+def IL_plot(experiments,test_title, periods):
+    
+    df = experiments.copy()
+    df = df[df['substep'] == df.substep.max()]
+    df.fillna(method='ffill',inplace=True)
+ 
+    plt.figure(figsize=(12, 8))
+
+
+
+    UNI_IL_i = 2* np.sqrt(np.abs(df.UNI_P_RQi.pct_change(periods))) / (1 + df.UNI_P_RQi.pct_change(periods)) - 1
+    UNI_IL_j = 2* np.sqrt(np.abs(df.UNI_P_RQj.pct_change(periods))) / (1 + df.UNI_P_RQj.pct_change(periods)) - 1
+    
+    plt.plot(UNI_IL_i,label='Asset i', marker='o')
+    plt.plot(UNI_IL_j,label='Asset j',marker='o')
+    plt.legend()
+    plt.title(test_title + str(periods))
+    plt.xlabel('Timestep')
+    plt.ylabel('Windowed Delta Price Ratio')
+    plt.show()
+
+def rel_price_plot(experiments,test_title, asset_id_list):
+    """
+    asset_id_list is an asset pair only to view relative prices
+    """
+    df = experiments
+    df = df[df['substep'] == df.substep.max()]
+    reserve_asset_in = df['UNI_ij']
+    reserve_asset_out = df['UNI_ji']
+    asset_price_in = df['UNI_P_RQi']
+    asset_price_out = df['UNI_P_RQj']
+    asset_weight_in = df['UNI_Si']
+    asset_weight_out = df['UNI_Sj']
+
+    # Compute percent change in reserve
+    reserve_in_pct_change = reserve_asset_in.pct_change()
+    reserve_out_pct_change = reserve_asset_out.pct_change()
+
+    # Compute price of OUT asset in terms of IN asset
+    price_out_for_in = asset_price_in / asset_price_out
+
+    # Compute percent change in price (OUT per IN)
+    price_pct_change = price_out_for_in.pct_change()
+
+    # Slippage calculation #1: elasticity of price with respect to transactions size
+    elasticity = price_pct_change / reserve_in_pct_change
+
+    # Slippage calculation #2: percentage difference between effective and spot price
+    slippage = ( (reserve_in_pct_change / reserve_asset_in) / (reserve_out_pct_change / reserve_asset_out) * (asset_weight_in / asset_weight_out) - 1 )
+    plt.figure(figsize=(20,6))
+    plt.subplot(131)
+    plt.plot(price_pct_change,label='Price Change '+ asset_id_list, marker='o')
+    plt.legend()
+    plt.xlabel('Timestep')
+
+    plt.subplot(132)
+    plt.plot(elasticity,label='Price Elasticity '+ asset_id_list, marker='o')
+    plt.legend()
+    plt.xlabel('Timestep')
+
+    plt.subplot(133)   
+    plt.plot(slippage,label='Price Slippage '+ asset_id_list, marker='o')
+    plt.legend()
+    plt.xlabel('Timestep')
+    plt.ylabel('Price Change')
+
+    plt.suptitle(test_title)
     plt.show()

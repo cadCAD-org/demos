@@ -1,3 +1,4 @@
+import numpy as np
 # Behaviors
 
 def actionDecoder(params, step, history, prev_state):
@@ -20,7 +21,12 @@ def actionDecoder(params, step, history, prev_state):
     ACTION_LIST =  params['ACTION_LIST']
     # print(ACTION_LIST)
 
+    trade_mean = params['mu']
+    trade_sd = params['sigma']
 
+    trade_size = np.random.normal(trade_mean, trade_sd)
+
+    action['asset_id'] = np.random.choice(['i', 'j'])
     timestep = prev_state['timestep']
 
     ############ CHOOSE ASSET TYPE #############################
@@ -35,17 +41,17 @@ def actionDecoder(params, step, history, prev_state):
     ############ CHOOSE ASSET TYPE #############################
     ### USE A PARAM TO CHOOSE COMPOSITE AND ASSET TYPE TRANSACTIONS 
     
-    if params['exo_asset'] == 'alternating':
-        if timestep % 2 == 0:
-            action['asset_id'] = 'i'
-        elif timestep % 2 == 1:
-            action['asset_id'] = 'j'
+    # if params['exo_asset'] == 'alternating':
+    #     if timestep % 2 == 0:
+    #         action['asset_id'] = 'i'
+    #     elif timestep % 2 == 1:
+    #         action['asset_id'] = 'j'
 
-    if params['exo_asset'] == 'i_only':
-        action['asset_id'] = 'i'
+    # if params['exo_asset'] == 'i_only':
+    #     action['asset_id'] = 'i'
 
-    if params['exo_asset'] == 'j_only':
-        action['asset_id'] = 'j'
+    # if params['exo_asset'] == 'j_only':
+    #     action['asset_id'] = 'j'
 
     ############ CHOOSE ASSET TYPE #############################
     
@@ -127,25 +133,25 @@ def actionDecoder(params, step, history, prev_state):
     ########## TEMP TEST SELL Q FOR R ############
     ####### AGENT 0 ######################
     if params['exo_trade'] == 'test_q_for_r':
-        action['q_sold'] = 1000
+        action['q_sold'] = trade_size
         action['action_id'] = 'Ri_Purchase'
         # temp choose first agent
         action['agent_id'] = prev_state['uni_agents']['m'][0]
         if action['asset_id'] == 'j':
             action['agent_id'] = prev_state['uni_agents']['m'][0]
-            action['q_sold'] = 1000
+            action['q_sold'] = trade_size
     ###############################################
 
     ########## TEMP TEST SELL Q FOR R ############
     ####### AGENT 1 ######################
     if params['exo_trade'] == 'test_r_for_q':
-        action['ri_sold'] = 1000
+        action['ri_sold'] = trade_size
         action['action_id'] = 'Q_Purchase'
         # temp choose first agent
         action['agent_id'] = prev_state['uni_agents']['m'][1]
         if action['asset_id'] == 'j':
             action['agent_id'] = prev_state['uni_agents']['m'][1]
-            action['ri_sold'] = 1000
+            action['ri_sold'] = trade_size
     ###############################################
 
     ########## TEMP TEST ADD LIQ ############
@@ -179,7 +185,7 @@ def actionDecoder(params, step, history, prev_state):
     ########## TEMP TEST SELL R FOR R ############
     ####### AGENT 5 ######################
     if params['exo_trade'] == 'test_r_for_r':
-        action['ri_sold'] = 100
+        action['ri_sold'] = trade_size
         action['action_id'] = 'R_Swap'
         action['purchased_asset_id'] = 'j'
         action['direction'] = 'ij'
@@ -188,7 +194,7 @@ def actionDecoder(params, step, history, prev_state):
         action['agent_id'] = prev_state['uni_agents']['m'][3]
         if action['asset_id'] == 'j':
             action['agent_id'] = prev_state['uni_agents']['m'][3]
-            action['ri_sold'] = 50
+            action['ri_sold'] = trade_size
             action['purchased_asset_id'] = 'i'
             action['direction'] = 'ji'
 
