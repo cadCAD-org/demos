@@ -1,8 +1,6 @@
 import pandas as pd
-from .parts.utils import * 
-from model import config 
 from cadCAD.engine import ExecutionMode, ExecutionContext,Executor
-from cadCAD import configs
+from .config import exp
 
 
 def get_M(k, v):
@@ -13,7 +11,7 @@ def get_M(k, v):
 config_ids = [
     dict(
         get_M(k, v) for k, v in config.__dict__.items() if k in ['simulation_id', 'run_id', 'sim_config', 'subset_id']
-    ) for config in configs
+    ) for config in exp.configs
 ]
 
 
@@ -25,7 +23,7 @@ def run(drop_midsteps=True):
     exec_mode = ExecutionMode()
     local_mode_ctx = ExecutionContext(context=exec_mode.local_mode)
 
-    simulation = Executor(exec_context=local_mode_ctx, configs=configs)
+    simulation = Executor(exec_context=local_mode_ctx, configs=exp.configs)
     raw_system_events, tensor_field, sessions = simulation.execute()
     # Result System Events DataFrame
     df = pd.DataFrame(raw_system_events)
@@ -33,7 +31,7 @@ def run(drop_midsteps=True):
     config_ids = [
     dict(
         get_M(k, v) for k, v in config.__dict__.items() if k in ['simulation_id', 'run_id', 'sim_config', 'subset_id']
-    ) for config in configs
+    ) for config in exp.configs
 ]
     
     results = pd.DataFrame()

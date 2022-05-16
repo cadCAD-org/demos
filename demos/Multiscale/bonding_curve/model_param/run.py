@@ -1,8 +1,6 @@
 import pandas as pd
-from model_param import config 
 from cadCAD.engine import ExecutionMode, ExecutionContext,Executor
-from cadCAD import configs
-
+from .config import exp
 
 
 def run():
@@ -14,7 +12,7 @@ def run():
     multi_mode_ctx = ExecutionContext(context=exec_mode.multi_proc)
 
 
-    simulation = Executor(exec_context=multi_mode_ctx, configs=configs)
+    simulation = Executor(exec_context=multi_mode_ctx, configs=exp.configs)
     raw_system_events, tensor_field, sessions = simulation.execute()
     # Result System Events DataFrame
     df = pd.DataFrame(raw_system_events)
@@ -34,9 +32,9 @@ def postprocessing(df):
     df = df.loc[inds_to_drop].drop(columns=['substep'])
 
     # Attribute parameters to each row
-    df = df.assign(**configs[0].sim_config['M'])
+    df = df.assign(**exp.configs[0].sim_config['M'])
     for i, (_, n_df) in enumerate(df.groupby(['simulation', 'subset', 'run'])):
-        df.loc[n_df.index] = n_df.assign(**configs[i].sim_config['M'])
+        df.loc[n_df.index] = n_df.assign(**exp.configs[i].sim_config['M'])
 
     df['err'] = df.price-df.spot_price
     df['abs_err']= df.err.apply(abs)

@@ -35,7 +35,7 @@ exp.append_configs(
 # # # # # # # # # # # # # # # # # # # # GENESIS SWEEP LOGIC # # # # # # # # # # # # # # # # # # # #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
-for c in configs: # for each configuration object
+for c in exp.configs: # for each configuration object
     c.initial_state = deepcopy(c.initial_state) # make a deepcopy of the initial state dict (it's shared across configs by default)
  
     c.initial_state['pool'] = Adoption_Pool(c.sim_config['M']['SOURCE_POOL'])
