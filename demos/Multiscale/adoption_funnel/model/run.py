@@ -34,7 +34,7 @@ def run(drop_midsteps=True):
     ) for config in exp.configs
 ]
     
-    results = pd.DataFrame()
+    results_list = []
     for i, config_id in enumerate(config_ids):
         params = config_id['M']
         result_record = pd.DataFrame.from_records([tuple([i for i in params.values()])], columns=list(params.keys()))
@@ -45,14 +45,12 @@ def run(drop_midsteps=True):
         sub_df.drop(sub_df[is_droppable].index, inplace=True)
 
 
-        
-
         result_record['dataset'] = [sub_df]
-        results = results.append(result_record)
+        results_list.append(result_record)
 
+    results = pd.concat(results_list)   
     return results.reset_index()
     
-
 
 
 
